@@ -3,15 +3,15 @@
     "width": 2000,
     "height": 2000,
     "scrollTop": 0,
-    "scrollLeft": 11,
+    "scrollLeft": 12,
     "show": {
       "tableComment": true,
       "columnComment": true,
       "columnDataType": true,
       "columnDefault": true,
-      "columnAutoIncrement": false,
+      "columnAutoIncrement": true,
       "columnPrimaryKey": true,
-      "columnUnique": false,
+      "columnUnique": true,
       "columnNotNull": true,
       "relationship": true
     },
@@ -46,7 +46,7 @@
             "dataType": "INT",
             "default": "",
             "option": {
-              "autoIncrement": false,
+              "autoIncrement": true,
               "primaryKey": true,
               "unique": false,
               "notNull": true
@@ -94,7 +94,7 @@
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
-              "unique": false,
+              "unique": true,
               "notNull": false
             },
             "ui": {
@@ -180,10 +180,10 @@
           }
         ],
         "ui": {
-          "active": false,
+          "active": true,
           "left": 201,
           "top": 98,
-          "zIndex": 381,
+          "zIndex": 552,
           "widthName": 60,
           "widthComment": 60
         },
@@ -199,7 +199,7 @@
             "dataType": "INT",
             "default": "",
             "option": {
-              "autoIncrement": false,
+              "autoIncrement": true,
               "primaryKey": false,
               "unique": false,
               "notNull": true
@@ -265,9 +265,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 715,
-          "top": 150,
-          "zIndex": 319,
+          "left": 706,
+          "top": 114,
+          "zIndex": 532,
           "widthName": 84,
           "widthComment": 60
         },
@@ -283,7 +283,7 @@
             "dataType": "INT",
             "default": "",
             "option": {
-              "autoIncrement": false,
+              "autoIncrement": true,
               "primaryKey": true,
               "unique": false,
               "notNull": true
@@ -309,7 +309,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -324,29 +324,6 @@
             "id": "21ab1457-b097-1517-2e74-4ac76c054d26"
           },
           {
-            "name": "picture_id",
-            "comment": "",
-            "dataType": "INT",
-            "default": "",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            },
-            "id": "3d717858-4cec-f85a-4a98-edc057889953"
-          },
-          {
             "name": "created_at",
             "comment": "",
             "dataType": "timestamp",
@@ -355,7 +332,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -420,7 +397,7 @@
           "active": false,
           "left": 1198,
           "top": 106,
-          "zIndex": 379,
+          "zIndex": 536,
           "widthName": 60,
           "widthComment": 60
         },
@@ -436,10 +413,10 @@
             "dataType": "int",
             "default": "",
             "option": {
-              "autoIncrement": false,
+              "autoIncrement": true,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -462,7 +439,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -485,7 +462,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -525,9 +502,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 1637,
+          "left": 1595,
           "top": 141,
-          "zIndex": 371,
+          "zIndex": 540,
           "widthName": 60,
           "widthComment": 60
         },
@@ -543,14 +520,14 @@
             "dataType": "int",
             "default": "",
             "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
+              "autoIncrement": true,
+              "primaryKey": true,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
-              "pk": false,
+              "pk": true,
               "fk": false,
               "pfk": false,
               "widthName": 60,
@@ -569,7 +546,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -592,7 +569,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -615,7 +592,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -657,7 +634,7 @@
           "active": false,
           "left": 1226,
           "top": 486,
-          "zIndex": 373,
+          "zIndex": 518,
           "widthName": 60,
           "widthComment": 60
         },
@@ -673,7 +650,7 @@
             "dataType": "INT",
             "default": "",
             "option": {
-              "autoIncrement": false,
+              "autoIncrement": true,
               "primaryKey": true,
               "unique": false,
               "notNull": true
@@ -699,7 +676,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -791,7 +768,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -856,7 +833,7 @@
           "active": false,
           "left": 1184,
           "top": 782,
-          "zIndex": 377,
+          "zIndex": 544,
           "widthName": 61,
           "widthComment": 60
         },
@@ -872,10 +849,10 @@
             "dataType": "int",
             "default": "",
             "option": {
-              "autoIncrement": false,
+              "autoIncrement": true,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -898,7 +875,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -938,7 +915,7 @@
           {
             "name": "picture_id",
             "comment": "",
-            "dataType": "int",
+            "dataType": "INT",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -967,7 +944,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -1032,7 +1009,7 @@
           "active": false,
           "left": 590,
           "top": 757,
-          "zIndex": 341,
+          "zIndex": 548,
           "widthName": 60,
           "widthComment": 60
         },
@@ -1045,10 +1022,10 @@
           {
             "name": "id",
             "comment": "",
-            "dataType": "int",
+            "dataType": "INT",
             "default": "",
             "option": {
-              "autoIncrement": false,
+              "autoIncrement": true,
               "primaryKey": true,
               "unique": false,
               "notNull": true
@@ -1074,7 +1051,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -1097,7 +1074,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -1120,7 +1097,7 @@
               "autoIncrement": false,
               "primaryKey": true,
               "unique": false,
-              "notNull": true
+              "notNull": false
             },
             "ui": {
               "active": false,
@@ -1135,13 +1112,13 @@
             "id": "0ca74311-05c2-d2f3-d83c-cab9f2bd91fb"
           },
           {
-            "name": "message_id",
+            "name": "server_id",
             "comment": "",
-            "dataType": "int",
+            "dataType": "INT",
             "default": "",
             "option": {
               "autoIncrement": false,
-              "primaryKey": false,
+              "primaryKey": true,
               "unique": false,
               "notNull": false
             },
@@ -1149,13 +1126,36 @@
               "active": false,
               "pk": false,
               "fk": false,
-              "pfk": false,
+              "pfk": true,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "c0a55af1-3afb-05ea-42f0-797581566b70"
+          },
+          {
+            "name": "message_id",
+            "comment": "",
+            "dataType": "INT",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": true,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": true,
               "widthName": 72,
               "widthComment": 60,
               "widthDataType": 60,
               "widthDefault": 60
             },
-            "id": "a00b8b2a-ad21-5769-ad3c-0f1c38f58e92"
+            "id": "281955c8-91c1-d13e-7be6-63b522e94690"
           },
           {
             "name": "updated_at",
@@ -1212,7 +1212,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -1229,9 +1229,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 204,
-          "top": 478,
-          "zIndex": 358,
+          "left": 206,
+          "top": 440,
+          "zIndex": 522,
           "widthName": 60,
           "widthComment": 60
         },
@@ -1252,8 +1252,8 @@
           "columnIds": [
             "88e9956f-8661-680d-2f53-fa4ff100fa33"
           ],
-          "x": 1376,
-          "y": 298,
+          "x": 1399.5,
+          "y": 277.5,
           "direction": "bottom"
         },
         "end": {
@@ -1261,7 +1261,7 @@
           "columnIds": [
             "0ae0c436-2375-2ce1-01f7-db4053c55de3"
           ],
-          "x": 1399.5,
+          "x": 1423,
           "y": 486,
           "direction": "top"
         },
@@ -1275,8 +1275,8 @@
           "columnIds": [
             "bf4c0fe7-1bc2-e1f1-19c9-c7ccda457faf"
           ],
-          "x": 557,
-          "y": 242,
+          "x": 604,
+          "y": 146,
           "direction": "right"
         },
         "end": {
@@ -1284,8 +1284,8 @@
           "columnIds": [
             "c1edfb58-9e4c-3886-4844-4a53e73172af"
           ],
-          "x": 715,
-          "y": 215.25,
+          "x": 706,
+          "y": 179.25,
           "direction": "left"
         },
         "id": "d243aec8-bd37-b313-ba55-c34514dd7bcd",
@@ -1299,7 +1299,7 @@
             "88e9956f-8661-680d-2f53-fa4ff100fa33"
           ],
           "x": 1198,
-          "y": 250,
+          "y": 134.58333333333334,
           "direction": "left"
         },
         "end": {
@@ -1307,8 +1307,8 @@
           "columnIds": [
             "d8481b5f-8ec5-0a1d-914f-60aebcdeb8f0"
           ],
-          "x": 1062,
-          "y": 215.25,
+          "x": 1100,
+          "y": 179.25,
           "direction": "right"
         },
         "id": "c975deb0-c191-78e0-eac1-f22075848fea",
@@ -1321,8 +1321,8 @@
           "columnIds": [
             "88e9956f-8661-680d-2f53-fa4ff100fa33"
           ],
-          "x": 1554,
-          "y": 202,
+          "x": 1601,
+          "y": 191.75,
           "direction": "right"
         },
         "end": {
@@ -1330,7 +1330,7 @@
           "columnIds": [
             "1ea8e2ee-a1a5-ce81-a653-7b731c20c075"
           ],
-          "x": 1637,
+          "x": 1595,
           "y": 216.5,
           "direction": "left"
         },
@@ -1344,7 +1344,7 @@
           "columnIds": [
             "cb89bdb8-9caf-8bd4-99e5-198b4e76f7bb"
           ],
-          "x": 1453.25,
+          "x": 1488.5,
           "y": 782,
           "direction": "top"
         },
@@ -1353,7 +1353,7 @@
           "columnIds": [
             "b3487848-4f2a-c055-2ab2-ff3d5bc0a476"
           ],
-          "x": 1543,
+          "x": 1590,
           "y": 802,
           "direction": "right"
         },
@@ -1367,7 +1367,7 @@
           "columnIds": [
             "0ae0c436-2375-2ce1-01f7-db4053c55de3"
           ],
-          "x": 1399.5,
+          "x": 1423,
           "y": 657.5,
           "direction": "bottom"
         },
@@ -1376,7 +1376,7 @@
           "columnIds": [
             "68f17e38-c56f-7d13-65e0-b519fbfa4ef1"
           ],
-          "x": 1273.75,
+          "x": 1285.5,
           "y": 782,
           "direction": "top"
         },
@@ -1391,7 +1391,7 @@
             "88e9956f-8661-680d-2f53-fa4ff100fa33"
           ],
           "x": 1198,
-          "y": 154,
+          "y": 248.91666666666666,
           "direction": "left"
         },
         "end": {
@@ -1399,7 +1399,7 @@
           "columnIds": [
             "2c2edd7d-6fca-9fe7-9ba5-361479d0d9a9"
           ],
-          "x": 768,
+          "x": 791.5,
           "y": 757,
           "direction": "top"
         },
@@ -1413,8 +1413,8 @@
           "columnIds": [
             "a541b133-e4d9-50a6-a5b9-a7adff6c6060"
           ],
-          "x": 384.5,
-          "y": 711,
+          "x": 410,
+          "y": 693.5,
           "direction": "bottom"
         },
         "end": {
@@ -1436,7 +1436,7 @@
           "columnIds": [
             "bf4c0fe7-1bc2-e1f1-19c9-c7ccda457faf"
           ],
-          "x": 379,
+          "x": 402.5,
           "y": 290,
           "direction": "bottom"
         },
@@ -1445,8 +1445,8 @@
           "columnIds": [
             "0ca74311-05c2-d2f3-d83c-cab9f2bd91fb"
           ],
-          "x": 384.5,
-          "y": 478,
+          "x": 410,
+          "y": 440,
           "direction": "top"
         },
         "id": "a21d0f62-9192-c52d-9204-6df4ab1d8402",
@@ -1459,8 +1459,8 @@
           "columnIds": [
             "bf4c0fe7-1bc2-e1f1-19c9-c7ccda457faf"
           ],
-          "x": 557,
-          "y": 146,
+          "x": 604,
+          "y": 242,
           "direction": "right"
         },
         "end": {
@@ -1469,10 +1469,56 @@
             "ba10c3f9-eb8a-c0e4-7c69-66587df73d18"
           ],
           "x": 1184,
-          "y": 898.5,
+          "y": 956.75,
           "direction": "left"
         },
         "id": "b44b5fac-7f0e-0e5f-0800-13bacb005d26",
+        "relationshipType": "N"
+      },
+      {
+        "identification": true,
+        "start": {
+          "tableId": "55bee398-90a3-c78b-f539-9958383d6595",
+          "columnIds": [
+            "b3487848-4f2a-c055-2ab2-ff3d5bc0a476"
+          ],
+          "x": 1184,
+          "y": 840.25,
+          "direction": "left"
+        },
+        "end": {
+          "tableId": "008cc698-f3a1-882c-95e0-16fe67a29535",
+          "columnIds": [
+            "281955c8-91c1-d13e-7be6-63b522e94690"
+          ],
+          "x": 614,
+          "y": 630.125,
+          "direction": "right"
+        },
+        "id": "8a84262e-2366-c1f4-8ba0-bb308bb90452",
+        "relationshipType": "One"
+      },
+      {
+        "identification": true,
+        "start": {
+          "tableId": "6983c056-0501-0caa-7b85-e20331072b0e",
+          "columnIds": [
+            "88e9956f-8661-680d-2f53-fa4ff100fa33"
+          ],
+          "x": 1198,
+          "y": 191.75,
+          "direction": "left"
+        },
+        "end": {
+          "tableId": "008cc698-f3a1-882c-95e0-16fe67a29535",
+          "columnIds": [
+            "c0a55af1-3afb-05ea-42f0-797581566b70"
+          ],
+          "x": 614,
+          "y": 503.375,
+          "direction": "right"
+        },
+        "id": "58ccf0ba-703b-ac2e-f47b-bb925037116a",
         "relationshipType": "N"
       }
     ]
