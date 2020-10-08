@@ -19,20 +19,17 @@ func InitServices() (Services, error) {
 	var s Services
 	var err error
 
-	s.DB, err = InitDB(s)
+	s.DB, err = InitDB()
 	if err != nil {
 		log.Fatalf("Error connecting to DB: %v \n", err.Error())
 	}
 
-	s.UserRepo = InitUserRepo(s)
-	if err != nil {
-		log.Fatalf("Error while attaching user repo: %v \n", err.Error())
-	}
+	s.UserRepo = InitUserRepo(s.DB)
 
 	return s, err
 }
 
-func InitDB(s Services) (*gorm.DB, error) {
+func InitDB() (*gorm.DB, error) {
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
@@ -50,6 +47,6 @@ func InitDB(s Services) (*gorm.DB, error) {
 	})
 }
 
-func InitUserRepo(s Services) repositories.UserRepo {
-	return repositories.NewUserRepo(s.DB)
+func InitUserRepo(db *gorm.DB) repositories.UserRepo {
+	return repositories.NewUserRepo(db)
 }

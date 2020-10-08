@@ -21,5 +21,6 @@ func Server(_ *cobra.Command, _ []string) error {
 	}
 	fmt.Print(s)
 
+	defer s.DB.Close()
 	return nil
 }
