@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"discord-clone-server/app"
-	"log"
+	"fmt"
 
 	"github.com/spf13/cobra"
 )
@@ -10,14 +10,16 @@ import (
 var ServerCmd = &cobra.Command{
 	Use:   "server",
 	Short: "run the web server",
-	RunE:  server,
+	RunE:  Server,
 	Args:  cobra.ExactArgs(0),
 }
 
-func server(_ *cobra.Command, _ []string) error {
-	_, err := app.InitServices()
+func Server(_ *cobra.Command, _ []string) error {
+	s, err := app.InitServices()
 	if err != nil {
-		log.Fatalf("error initializing services: %v\n", err.Error())
+		return err
 	}
+	fmt.Print(s)
+
 	return nil
 }
