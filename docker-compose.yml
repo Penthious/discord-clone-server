@@ -8,7 +8,7 @@ services:
         image: mysql:5.7
         environment:
             MYSQL_ROOT_PASSWORD: secret
-            MYSQL_DATABASE: docker_clone
+            MYSQL_DATABASE: discord_clone
         ports:
         - "3306:3306"
         volumes:

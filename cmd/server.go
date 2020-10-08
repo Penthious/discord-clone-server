@@ -15,7 +15,7 @@ var ServerCmd = &cobra.Command{
 }
 
 func server(_ *cobra.Command, _ []string) error {
-	s, err := app.InitServices()
+	_, err := app.InitServices()
 	if err != nil {
 		log.Fatalf("error initializing services: %v\n", err.Error())
 	}
