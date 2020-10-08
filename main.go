@@ -1,7 +1,23 @@
 package main
 
-import "fmt"
+import (
+	"discord-clone-server/cmd"
+	"os"
+
+	"github.com/spf13/cobra"
+)
 
 func main() {
-	fmt.Println("hello world")
+	var rootCmd = &cobra.Command{
+		Use: "discord-clone-server",
+	}
+
+	rootCmd.SetOut(os.Stdout)
+	rootCmd.AddCommand(
+		cmd.ServerCmd,
+	)
+
+	if err := rootCmd.Execute(); err != nil {
+		os.Exit(1)
+	}
 }
