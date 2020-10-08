@@ -1,0 +1,15 @@
+version: "3.5"
+
+volumes:
+    db-volume:
+
+services:
+    db:
+        image: mysql:5.7
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_DATABASE: docker_clone
+        ports:
+        - "3306:3306"
+        volumes:
+        - db-volume:/var/lib/mysql
