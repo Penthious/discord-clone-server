@@ -15,6 +15,7 @@ func main() {
 	rootCmd.SetOut(os.Stdout)
 	rootCmd.AddCommand(
 		cmd.ServerCmd,
+		cmd.MigrateCmd,
 	)
 
 	if err := rootCmd.Execute(); err != nil {

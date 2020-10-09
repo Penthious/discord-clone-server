@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"discord-clone-server/app"
-	"fmt"
 
 	"github.com/spf13/cobra"
 )
@@ -19,8 +18,11 @@ func Server(_ *cobra.Command, _ []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Print(s)
+	r, err := app.InitRouter(s)
+	if err != nil {
+		return err
+	}
+	r.Run()
 
-	defer s.DB.Close()
 	return nil
 }
