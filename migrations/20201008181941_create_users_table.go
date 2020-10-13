@@ -14,10 +14,11 @@ func Up20201008181941(tx *sql.Tx) error {
 	// This code is executed when the migration is applied.
 	_, err := tx.Exec(`
 CREATE TABLE users (
-  id         INT       NOT NULL,
+  id int(11) NOT NULL AUTO_INCREMENT,
   first_name varchar(100)   ,
   last_name  varchar(100)   ,
   email      varchar(100)   UNIQUE,
+  username   varchar(100)   UNIQUE,
   password   varchar(100)  ,
   created_at datetime,
   deleted_at datetime,

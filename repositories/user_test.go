@@ -1,14 +1,11 @@
 package repositories
 
 import (
-	"fmt"
 	"testing"
 )
 
 func Test_UserRepo_Get(t *testing.T) {
 	dbName := GetDBName(t.Name())
-	fmt.Printf("dbName %v\n", dbName)
-	fmt.Println("--------")
 	db := InitTestDB(t, dbName)
 	defer DropTestDB(t, db, dbName)
 }

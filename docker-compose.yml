@@ -1,9 +1,17 @@
-version: "3.5"
+version: "3.7"
 
 volumes:
     db-volume:
 
 services:
+    server:
+        build:
+            context: .
+            target: dev
+        volumes:
+            - ./:/app
+        environment: 
+            WAIT_HOSTS: db:3306
     db:
         image: mysql:5.7
         environment:

@@ -82,17 +82,7 @@ func GetDBName(prefix string) string {
 }
 
 func DropTestDB(t *testing.T, db *gorm.DB, dbName string) {
-	fmt.Printf("dbName: %v\n", dbName)
-	tx := db.Exec("DROP DATABASE " + dbName)
-
-	if tx.Error != nil {
-		t.Fatalf("Failed to drop db: %v", tx.Error)
+	if err := db.Exec(fmt.Sprintf("DROP DATABASE if exists `%s`", dbName)).Error; err != nil {
+		t.Fatalf("error refreshing test DB: %s", err.Error())
 	}
-	// DROP DATABASE Test_UserRepo_Get_BpLnfg
-	// DROP DATABASE 'Test_UserRepo_Get_BpLnfg'
-
-	// if err := db.Exec(fmt.Sprintf("DROP DATABASE if exists `%s`", dbName)).Error; err != nil {
-	// 	t.Fatalf("error refreshing test DB: %s", err.Error())
-	// }
-
 }
