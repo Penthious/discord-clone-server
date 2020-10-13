@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"discord-clone-server/models"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -22,7 +23,12 @@ type userRepo struct {
 }
 
 func (u userRepo) Create(user models.User) error {
-	return u.DB.Create(&user).Error
+	fmt.Printf("user: %v\n", user)
+	if err := u.DB.Exec("INSERT into users first_name, last_name, username, email, password VALUES(?,?,?,?,?)", user.FirstName, user.LastName, user.UserName, user.Email, user.Password).Error; err != nil {
+		return err
+	}
+	// return u.DB.Create(&user).Error
+	return nil
 }
 
 func (u userRepo) Get() ([]models.User, error) {
