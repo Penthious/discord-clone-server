@@ -2,6 +2,7 @@ package app
 
 import (
 	"discord-clone-server/repositories"
+	"discord-clone-server/utils"
 	"log"
 	"os"
 
@@ -38,10 +39,9 @@ func InitDB() (*gorm.DB, error) {
 		},
 	)
 
-	connectionInfo := "root:secret@tcp(172.21.0.2:3306)/discord_clone?parseTime=true"
-	// return fmt.Sprintf("%s:%s@%s(%s:%d)/%s?parseTime=%s", c.User, c.Password, c.Protocol, c.Host, c.Port, c.Name, c.ParseTime)
+	dsn := utils.GetMysqlDSN("")
 
-	return gorm.Open(mysql.Open(connectionInfo), &gorm.Config{
+	return gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger:                 newLogger,
 		SkipDefaultTransaction: true,
 	})

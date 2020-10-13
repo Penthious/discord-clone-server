@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"discord-clone-server/utils"
 	"fmt"
 	"log"
 	"math/rand"
@@ -16,7 +17,7 @@ import (
 )
 
 func InitTestDB(t *testing.T, dbName string) *gorm.DB {
-	// var dsn string
+	var dsn string
 
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
@@ -25,9 +26,10 @@ func InitTestDB(t *testing.T, dbName string) *gorm.DB {
 			Colorful: true,
 		},
 	)
-	connectionInfo := "root:secret@tcp(172.21.0.2:3306)/?parseTime=true"
 
-	db, err := gorm.Open(mysql.Open(connectionInfo), &gorm.Config{
+	dsn = utils.GetMysqlDSN("")
+
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger:                 newLogger,
 		SkipDefaultTransaction: true,
 	})
