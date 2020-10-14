@@ -31,7 +31,7 @@ func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 			// RespondBadRequestError(c, err, "error binding set request store", s.log)
 			return
 		}
-		if err := r.Create(user); err != nil {
+		if err := r.Create(&user); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			// RespondBadRequestError(c, err, "error binding set request store", s.log)
 			return

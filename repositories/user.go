@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"discord-clone-server/models"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -14,7 +13,7 @@ func NewUserRepo(db *gorm.DB) UserRepo {
 }
 
 type UserRepo interface {
-	Create(models.User) error
+	Create(*models.User) error
 	Get() ([]models.User, error)
 }
 
@@ -22,8 +21,7 @@ type userRepo struct {
 	DB *gorm.DB
 }
 
-func (u userRepo) Create(user models.User) error {
-	fmt.Printf("user: %v\n", user)
+func (u userRepo) Create(user *models.User) error {
 	return u.DB.Create(&user).Error
 }
 

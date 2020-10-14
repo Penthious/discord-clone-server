@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"discord-clone-server/models"
 	"discord-clone-server/utils"
 	"fmt"
 	"log"
@@ -8,6 +9,8 @@ import (
 	"os"
 	"testing"
 	"time"
+
+	_ "discord-clone-server/migrations"
 
 	"github.com/pressly/goose"
 
@@ -69,6 +72,7 @@ func InitTestDB(t *testing.T, dbName string) *gorm.DB {
 		t.Fatalf("error running migrations: %v\n", err.Error())
 	}
 
+	fmt.Printf("db: %v", db.Name())
 	return db
 }
 
@@ -86,5 +90,14 @@ func GetDBName(prefix string) string {
 func DropTestDB(t *testing.T, db *gorm.DB, dbName string) {
 	if err := db.Exec(fmt.Sprintf("DROP DATABASE if exists `%s`", dbName)).Error; err != nil {
 		t.Fatalf("error refreshing test DB: %s", err.Error())
+	}
+}
+
+func MakeTestUsers(t *testing.T, db *gorm.DB, users []models.User) {
+
+	tx := db.Create(&users)
+
+	if err := tx.Error; err != nil {
+		t.Fatalf("error creating users: %s", err.Error())
 	}
 }
