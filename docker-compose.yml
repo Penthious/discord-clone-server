@@ -16,6 +16,7 @@ services:
             DB_NAME: discord_clone
             DB_PASSWORD: secret
             DB_USER: root
+            SESSION_SECRET: super_secret_session_key
         ports:
             - "3000:3000"
     db:

@@ -5,6 +5,7 @@ import (
 	"discord-clone-server/repositories"
 	"net/http"
 
+	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,6 +25,7 @@ func UserIndex(r repositories.UserRepo) gin.HandlerFunc {
 
 func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		session := sessions.Default(c)
 
 		var user models.User
 		if err := c.ShouldBind(&user); err != nil {
@@ -35,7 +37,12 @@ func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			// RespondBadRequestError(c, err, "error binding set request store", s.log)
 			return
+		}
 
+		session.Set("user", user.ID)
+		if err := session.Save(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
+			return
 		}
 		c.JSON(http.StatusCreated, gin.H{
 			"message": user,
