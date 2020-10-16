@@ -23,15 +23,29 @@ func UserIndex(r repositories.UserRepo) gin.HandlerFunc {
 	}
 }
 
+type userCreateParams struct {
+	FirstName string `json:"first_name" binding:"required"`
+	LastName  string `json:"last_name" binding:"required"`
+	Username  string `json:"username" binding:"required,min=4,max=15"`
+	Email     string `json:"email" binding:"required,email"`
+}
+
 func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
 
-		var user models.User
-		if err := c.ShouldBind(&user); err != nil {
+		var p userCreateParams
+		if err := c.ShouldBind(&p); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			// RespondBadRequestError(c, err, "error binding set request store", s.log)
 			return
+		}
+
+		user := models.User{
+			FirstName: p.FirstName,
+			LastName:  p.LastName,
+			Username:  p.Username,
+			Email:     p.Email,
 		}
 		if err := r.Create(&user); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})

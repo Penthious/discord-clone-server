@@ -15,6 +15,7 @@ func NewUserRepo(db *gorm.DB) UserRepo {
 type UserRepo interface {
 	Create(*models.User) error
 	Get() ([]models.User, error)
+	Find(id uint) (models.User, error)
 }
 
 type userRepo struct {
@@ -32,4 +33,14 @@ func (u userRepo) Get() ([]models.User, error) {
 	}
 
 	return users, nil
+}
+
+func (u userRepo) Find(id uint) (models.User, error) {
+	var user models.User
+	tx := u.DB.First(&user, id)
+
+	if err := tx.Error; err != nil {
+		return models.User{}, tx.Error
+	}
+	return user, nil
 }
