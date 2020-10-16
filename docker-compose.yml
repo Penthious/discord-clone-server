@@ -1,0 +1,30 @@
+version: "3.7"
+
+volumes:
+    db-volume:
+
+services:
+    server:
+        build:
+            context: .
+            target: dev
+        volumes:
+            - ./:/app
+        environment: 
+            WAIT_HOSTS: db:3306
+            DB_ADDR: db
+            DB_NAME: discord_clone
+            DB_PASSWORD: secret
+            DB_USER: root
+            SESSION_SECRET: super_secret_session_key
+        ports:
+            - "3000:3000"
+    db:
+        image: mysql:5.7
+        environment:
+            MYSQL_DATABASE: discord_clone
+            MYSQL_ROOT_PASSWORD: secret
+        ports:
+        - "3306:3306"
+        volumes:
+        - db-volume:/var/lib/mysql
