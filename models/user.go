@@ -14,21 +14,11 @@ type User struct {
 	Username  string    `json:"username"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
-	Servers   []*Server `gorm:"many2many:server_user"`
+	Servers   []*Server `gorm:"many2many:server_users"`
 }
 
 func (u *User) BeforeCreate(db *gorm.DB) (err error) {
-	hashedPassword, err := hashPassword(u.Password)
-	if err != nil {
-		return err
-	}
-	u.Password = hashedPassword
-
-	return
-}
-
-func (u *User) BeforeUpdate(db *gorm.DB) (err error) {
-	hashedPassword, err := hashPassword(u.Password)
+	hashedPassword, err := HashPassword(u.Password)
 	if err != nil {
 		return err
 	}
@@ -45,12 +35,11 @@ func (u *User) CheckPassword(password string) error {
 	return bcrypt.CompareHashAndPassword(byteHashedPassword, bytePassword)
 }
 
-func hashPassword(password string) (string, error) {
-	fmt.Println("before create")
+func HashPassword(password string) (string, error) {
 	fmt.Println(password)
 
 	if password != "" {
-		hash, err := MakePassword(password)
+		hash, err := makePassword(password)
 		if err != nil {
 			return "", err
 		}
@@ -61,7 +50,7 @@ func hashPassword(password string) (string, error) {
 	return "", nil
 }
 
-func MakePassword(password string) (string, error) {
+func makePassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return string(bytes), err
 }

@@ -22,13 +22,27 @@ CREATE TABLE users (
   password   varchar(100)  ,
   created_at datetime,
   deleted_at datetime,
-  updated_at datetime NOT NULL,
+  updated_at datetime,
   PRIMARY KEY (id)
 )
 ENGINE = 'InnoDB'
 DEFAULT CHARSET = 'utf8mb4'
 COLLATE = 'utf8mb4_unicode_ci'
 `)
+	/*
+		CREATE TABLE `users` (
+			`id` bigint unsigned AUTO_INCREMENT,
+			`created_at` datetime(3) NULL,
+			`updated_at` datetime(3) NULL,
+			`deleted_at` datetime(3) NULL,
+			`first_name` longtext,
+			`last_name` longtext,
+			`username` longtext,
+			`email` longtext,
+			`password` longtext,
+			PRIMARY KEY (`id`),
+			INDEX idx_users_deleted_at (`deleted_at`))
+	*/
 	if err != nil {
 		return err
 	}

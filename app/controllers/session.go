@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -14,7 +12,12 @@ func SetSession(key string, value interface{}, c *gin.Context) {
 
 	session.Set(key, value)
 	if err := session.Save(); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
+		RespondInternalServerError(c, err, "Failed to save session")
 		return
 	}
+}
+
+func SessionRemove(key string, c *gin.Context) {
+	session := sessions.Default(c)
+	session.Delete(key)
 }

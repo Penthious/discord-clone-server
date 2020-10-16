@@ -13,16 +13,18 @@ func NewServerRepo(db *gorm.DB) ServerRepo {
 }
 
 type ServerRepo interface {
-	Create(*models.User, *models.Server) error
+	Create(*models.Server) error
+	Append(*models.User, models.Server) error
 }
 
 type serverRepo struct {
 	DB *gorm.DB
 }
 
-func (s serverRepo) Create(user *models.User, server *models.Server) error {
-
+func (s serverRepo) Append(user *models.User, server models.Server) error {
 	return s.DB.Model(&user).Association("Servers").Append(&server)
-	// return s.DB.Model(&user).Association("Servers").DB.Create(&server).Error
-	// return s.DB.Create(&server).Error
+}
+
+func (s serverRepo) Create(server *models.Server) error {
+	return s.DB.Create(&server).Error
 }

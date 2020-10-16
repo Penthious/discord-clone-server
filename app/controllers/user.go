@@ -5,7 +5,6 @@ import (
 	"discord-clone-server/repositories"
 	"net/http"
 
-	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -35,8 +34,7 @@ func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var p userCreateParams
 		if err := c.ShouldBind(&p); err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-			// RespondBadRequestError(c, err, "error binding set request store", s.log)
+			RespondBadRequestError(c, err, err.Error())
 			return
 		}
 
@@ -48,15 +46,12 @@ func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 			Password:  p.Password,
 		}
 		if err := r.Create(&user); err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-			// RespondBadRequestError(c, err, "error binding set request store", s.log)
+			RespondBadRequestError(c, err, "Error creating user")
 			return
 		}
 
 		SetSession(USER_KEY, user.ID, c)
-		c.JSON(http.StatusCreated, gin.H{
-			"user": user,
-		})
+		RespondStatusCreated(c, "user", user)
 	}
 }
 
@@ -70,36 +65,30 @@ func Login(ur repositories.UserRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var p loginParams
 		if err := c.ShouldBind(&p); err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-			// RespondBadRequestError(c, err, "error binding set request store", s.log)
+			RespondBadRequestError(c, err, err.Error())
 			return
 		}
 		userFindParams := repositories.UserFindParams{Email: p.Email, Username: p.Username}
 		user, err := ur.Find(userFindParams)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-			// RespondBadRequestError(c, err, "error binding set request store", s.log)
+			RespondBadRequestError(c, err, "Error finding user")
 			return
 
 		}
 
 		if err := user.CheckPassword(p.Password); err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			RespondBadRequestError(c, err, "Error password or email mismatch")
 		}
 
 		SetSession(USER_KEY, user.ID, c)
 
-		c.JSON(http.StatusOK, gin.H{
-			"user": user,
-		})
+		RespondStatusOK(c, "user", user)
 		return
 	}
 }
 
 func Logout(c *gin.Context) {
-	session := sessions.Default(c)
-	session.Delete(USER_KEY)
-	c.JSON(http.StatusAccepted, gin.H{
-		"message": "ok",
-	})
+	SessionRemove(USER_KEY, c)
+	RespondStatusAccepted(c, "message", "ok")
+	return
 }
