@@ -3,7 +3,7 @@
     "width": 2000,
     "height": 2000,
     "scrollTop": 0,
-    "scrollLeft": 9,
+    "scrollLeft": 81.66666412353516,
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -17,7 +17,7 @@
     },
     "database": "PostgreSQL",
     "databaseName": "",
-    "canvasType": "SQL",
+    "canvasType": "ERD",
     "language": "GraphQL",
     "tableCase": "pascalCase",
     "columnCase": "camelCase",
@@ -1030,9 +1030,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 590,
-          "top": 757,
-          "zIndex": 661,
+          "left": 572.5000006953875,
+          "top": 755.3333333995607,
+          "zIndex": 697,
           "widthName": 60,
           "widthComment": 60
         },
@@ -1559,8 +1559,8 @@
           "columnIds": [
             "2c2edd7d-6fca-9fe7-9ba5-361479d0d9a9"
           ],
-          "x": 791.5,
-          "y": 757,
+          "x": 774.0000006953875,
+          "y": 755.3333333995607,
           "direction": "top"
         },
         "id": "df7235af-9e71-9182-28c5-7527277f3e94",

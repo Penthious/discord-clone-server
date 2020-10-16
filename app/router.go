@@ -2,7 +2,6 @@ package app
 
 import (
 	"discord-clone-server/app/controllers"
-	"discord-clone-server/repositories"
 	"net/http"
 	"os"
 
@@ -27,7 +26,7 @@ func InitRouter(s Services) (*gin.Engine, error) {
 	r.POST("/users", controllers.UserCreate(s.UserRepo))
 
 	auth := r.Group("/auth")
-	auth.Use(AuthRequired(s.UserRepo))
+	auth.Use(AuthMiddleware(s.UserRepo))
 	{
 		auth.GET("/status", status)
 	}
@@ -37,29 +36,4 @@ func InitRouter(s Services) (*gin.Engine, error) {
 
 func status(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "You are logged in"})
-}
-
-func AuthRequired(ur repositories.UserRepo) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		userCookieID := session.Get("user")
-		if userCookieID == nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-			return
-		}
-		if userCookieID == 0 {
-			// Abort the request with the appropriate error code
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-			return
-		}
-		userFindParams := repositories.UserFindParams{ID: userCookieID.(uint)}
-		user, err := ur.Find(userFindParams)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-			return
-		}
-		c.Set("user", user)
-		// Continue down the chain to handler etc
-		c.Next()
-	}
 }

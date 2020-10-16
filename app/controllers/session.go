@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const USER_KEY = "USER_KEY"
+
 func SetSession(key string, value interface{}, c *gin.Context) {
 	session := sessions.Default(c)
 

@@ -53,7 +53,7 @@ func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 			return
 		}
 
-		SetSession("user", user.ID, c)
+		SetSession(USER_KEY, user.ID, c)
 		c.JSON(http.StatusCreated, gin.H{
 			"user": user,
 		})
@@ -87,7 +87,7 @@ func Login(ur repositories.UserRepo) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		}
 
-		SetSession("user", user.ID, c)
+		SetSession(USER_KEY, user.ID, c)
 
 		c.JSON(http.StatusOK, gin.H{
 			"user": user,
@@ -98,7 +98,7 @@ func Login(ur repositories.UserRepo) gin.HandlerFunc {
 
 func Logout(c *gin.Context) {
 	session := sessions.Default(c)
-	session.Delete("user")
+	session.Delete(USER_KEY)
 	c.JSON(http.StatusAccepted, gin.H{
 		"message": "ok",
 	})
