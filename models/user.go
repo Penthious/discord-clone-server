@@ -37,8 +37,8 @@ func (u *User) BeforeUpdate(db *gorm.DB) (err error) {
 }
 
 // Database will only save the hashed string, you should check it by util function.
-// 	if err := user.checkPassword("password0"); err != nil { password error }
-func (u *User) checkPassword(password string) error {
+// 	if err := user.CheckPassword("password0"); err != nil { password error }
+func (u *User) CheckPassword(password string) error {
 	bytePassword := []byte(password)
 	byteHashedPassword := []byte(u.Password)
 	return bcrypt.CompareHashAndPassword(byteHashedPassword, bytePassword)

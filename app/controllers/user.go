@@ -33,8 +33,6 @@ type userCreateParams struct {
 
 func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		session := sessions.Default(c)
-
 		var p userCreateParams
 		if err := c.ShouldBind(&p); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
@@ -55,13 +53,9 @@ func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 			return
 		}
 
-		session.Set("user", user.ID)
-		if err := session.Save(); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
-			return
-		}
+		SetSession("user", user.ID, c)
 		c.JSON(http.StatusCreated, gin.H{
-			"message": user,
+			"user": user,
 		})
 	}
 }
@@ -74,6 +68,38 @@ type loginParams struct {
 
 func Login(ur repositories.UserRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var p loginParams
+		if err := c.ShouldBind(&p); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			// RespondBadRequestError(c, err, "error binding set request store", s.log)
+			return
+		}
+		userFindParams := repositories.UserFindParams{Email: p.Email, Username: p.Username}
+		user, err := ur.Find(userFindParams)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			// RespondBadRequestError(c, err, "error binding set request store", s.log)
+			return
 
+		}
+
+		if err := user.CheckPassword(p.Password); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		}
+
+		SetSession("user", user.ID, c)
+
+		c.JSON(http.StatusOK, gin.H{
+			"user": user,
+		})
+		return
 	}
+}
+
+func Logout(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Delete("user")
+	c.JSON(http.StatusAccepted, gin.H{
+		"message": "ok",
+	})
 }

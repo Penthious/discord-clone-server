@@ -20,6 +20,9 @@ func InitRouter(s Services) (*gin.Engine, error) {
 			"message": "pong",
 		})
 	})
+	r.POST("/login", controllers.Login(s.UserRepo))
+	r.POST("/logout", controllers.Logout)
+
 	r.GET("/users", controllers.UserIndex(s.UserRepo))
 	r.POST("/users", controllers.UserCreate(s.UserRepo))
 
@@ -39,13 +42,18 @@ func status(c *gin.Context) {
 func AuthRequired(ur repositories.UserRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		userCookieID := session.Get("user").(uint)
+		userCookieID := session.Get("user")
+		if userCookieID == nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+			return
+		}
 		if userCookieID == 0 {
 			// Abort the request with the appropriate error code
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 			return
 		}
-		user, err := ur.Find(userCookieID)
+		userFindParams := repositories.UserFindParams{ID: userCookieID.(uint)}
+		user, err := ur.Find(userFindParams)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 			return

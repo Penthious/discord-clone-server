@@ -15,7 +15,7 @@ func NewUserRepo(db *gorm.DB) UserRepo {
 type UserRepo interface {
 	Create(*models.User) error
 	Get() ([]models.User, error)
-	Find(id uint) (models.User, error)
+	Find(params UserFindParams) (models.User, error)
 }
 
 type userRepo struct {
@@ -35,12 +35,30 @@ func (u userRepo) Get() ([]models.User, error) {
 	return users, nil
 }
 
-func (u userRepo) Find(id uint) (models.User, error) {
-	var user models.User
-	tx := u.DB.First(&user, id)
+type UserFindParams struct {
+	ID       uint
+	Email    string
+	Username string
+}
 
-	if err := tx.Error; err != nil {
-		return models.User{}, tx.Error
+func (u userRepo) Find(p UserFindParams) (models.User, error) {
+	var user models.User
+	if p.ID != 0 {
+		tx := u.DB.First(&user, p.ID)
+		if err := tx.Error; err != nil {
+			return models.User{}, tx.Error
+		}
+	} else if p.Email != "" {
+		tx := u.DB.Where("email = ?", p.Email).First(&user)
+		if err := tx.Error; err != nil {
+			return models.User{}, tx.Error
+		}
+	} else if p.Username != "" {
+		tx := u.DB.Where("username = ?", p.Username).First(&user)
+		if err := tx.Error; err != nil {
+			return models.User{}, tx.Error
+		}
 	}
+
 	return user, nil
 }
