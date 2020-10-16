@@ -25,7 +25,7 @@ require (
 	github.com/spf13/cobra v1.0.0
 	github.com/ugorji/go v1.1.10 // indirect
 	github.com/ziutek/mymysql v1.5.4 // indirect
-	golang.org/x/crypto v0.0.0-20201002170205-7f63de1d35b0 // indirect
+	golang.org/x/crypto v0.0.0-20201002170205-7f63de1d35b0
 	golang.org/x/sys v0.0.0-20201008064518-c1f3e3309c71 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/urfave/cli.v1 v1.20.0 // indirect

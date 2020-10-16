@@ -28,6 +28,7 @@ type userCreateParams struct {
 	LastName  string `json:"last_name" binding:"required"`
 	Username  string `json:"username" binding:"required,min=4,max=15"`
 	Email     string `json:"email" binding:"required,email"`
+	Password  string `json:"password" binding:"required,min=8,max=36"`
 }
 
 func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
@@ -46,6 +47,7 @@ func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 			LastName:  p.LastName,
 			Username:  p.Username,
 			Email:     p.Email,
+			Password:  p.Password,
 		}
 		if err := r.Create(&user); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
@@ -61,5 +63,17 @@ func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 		c.JSON(http.StatusCreated, gin.H{
 			"message": user,
 		})
+	}
+}
+
+type loginParams struct {
+	Username string `json:"username" binding:"required_without=Email"`
+	Email    string `json:"email" binding:"required_without=Username"`
+	Password string `json:"password" binding:"required"`
+}
+
+func Login(ur repositories.UserRepo) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
 	}
 }
