@@ -29,8 +29,8 @@ func InitRouter(s Services) (*gin.Engine, error) {
 	auth.Use(AuthMiddleware(s.UserRepo))
 	{
 		auth.GET("/status", status)
+		auth.POST("/servers", controllers.ServerCreate(s.ServerRepo))
 	}
-
 	return r, nil
 }
 

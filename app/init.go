@@ -12,8 +12,9 @@ import (
 )
 
 type Services struct {
-	DB       *gorm.DB
-	UserRepo repositories.UserRepo
+	DB         *gorm.DB
+	UserRepo   repositories.UserRepo
+	ServerRepo repositories.ServerRepo
 }
 
 func InitServices() (Services, error) {
@@ -26,6 +27,7 @@ func InitServices() (Services, error) {
 	}
 
 	s.UserRepo = InitUserRepo(s.DB)
+	s.ServerRepo = InitServerRepo(s.DB)
 
 	return s, err
 }
@@ -49,4 +51,7 @@ func InitDB() (*gorm.DB, error) {
 
 func InitUserRepo(db *gorm.DB) repositories.UserRepo {
 	return repositories.NewUserRepo(db)
+}
+func InitServerRepo(db *gorm.DB) repositories.ServerRepo {
+	return repositories.NewServerRepo(db)
 }

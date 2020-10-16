@@ -2,8 +2,8 @@
   "canvas": {
     "width": 2000,
     "height": 2000,
-    "scrollTop": 0,
-    "scrollLeft": 81.66666412353516,
+    "scrollTop": 3.3333332538604736,
+    "scrollLeft": 502.4999694824219,
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -15,10 +15,10 @@
       "columnNotNull": true,
       "relationship": true
     },
-    "database": "PostgreSQL",
+    "database": "MySQL",
     "databaseName": "",
-    "canvasType": "ERD",
-    "language": "GraphQL",
+    "canvasType": "SQL",
+    "language": "Scala",
     "tableCase": "pascalCase",
     "columnCase": "camelCase",
     "setting": {
@@ -264,10 +264,10 @@
           }
         ],
         "ui": {
-          "active": false,
+          "active": true,
           "left": 557,
           "top": 119,
-          "zIndex": 696,
+          "zIndex": 701,
           "widthName": 84,
           "widthComment": 60
         },
@@ -397,7 +397,7 @@
           "active": false,
           "left": 1077,
           "top": 109,
-          "zIndex": 688,
+          "zIndex": 700,
           "widthName": 60,
           "widthComment": 60
         },
