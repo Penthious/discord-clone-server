@@ -10,5 +10,5 @@ type Server struct {
 	Private bool   `json:"private"`
 	User_ID uint
 	Users   []*User `gorm:"many2many:server_users"`
-	Roles   []Roles
+	Roles   []Role
 }

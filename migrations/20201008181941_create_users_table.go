@@ -23,6 +23,7 @@ CREATE TABLE users (
   created_at datetime,
   deleted_at datetime,
   updated_at datetime,
+  
   PRIMARY KEY (id)
 )
 ENGINE = 'InnoDB'

@@ -21,10 +21,12 @@ CREATE TABLE server_user_roles (
   created_at datetime,
   deleted_at datetime,
   updated_at datetime,
+
   PRIMARY KEY (id, server_id, user_id, role_id),
-  CONSTRAINT FK_servers_TO_server_user_roles FOREIGN KEY (server_id) REFERENCES servers (id),
-  CONSTRAINT FK_users_TO_server_user_roles FOREIGN KEY (user_id) REFERENCES users (id),
-  CONSTRAINT FK_roles_TO_server_user_roles FOREIGN KEY (role_id) REFERENCES roles (id)
+
+  FOREIGN KEY (server_id) REFERENCES servers (id),
+  FOREIGN KEY (user_id) REFERENCES users (id),
+  FOREIGN KEY (role_id) REFERENCES roles (id)
 )
 ENGINE = 'InnoDB'
 DEFAULT CHARSET = 'utf8mb4'

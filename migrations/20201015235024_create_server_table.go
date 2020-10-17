@@ -21,6 +21,7 @@ CREATE TABLE servers (
   created_at datetime,
   deleted_at datetime,
   updated_at datetime,
+  
   PRIMARY KEY (id)
 )
 ENGINE = 'InnoDB'

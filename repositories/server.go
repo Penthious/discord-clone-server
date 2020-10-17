@@ -21,10 +21,10 @@ type serverRepo struct {
 	DB *gorm.DB
 }
 
-func (s serverRepo) Append(user *models.User, server models.Server) error {
-	return s.DB.Model(&user).Association("Servers").Append(&server)
+func (r serverRepo) Append(user *models.User, server models.Server) error {
+	return r.DB.Model(&user).Association("Servers").Append(&server)
 }
 
-func (s serverRepo) Create(server *models.Server) error {
-	return s.DB.Create(&server).Error
+func (r serverRepo) Create(server *models.Server) error {
+	return r.DB.Create(&server).Error
 }

@@ -20,7 +20,9 @@ CREATE TABLE roles (
   created_at datetime,
   deleted_at datetime,
   updated_at datetime,
+
   PRIMARY KEY (id, server_id),
+
   CONSTRAINT FK_servers_TO_server_users FOREIGN KEY (server_id) REFERENCES servers (id)
 )
 ENGINE = 'InnoDB'

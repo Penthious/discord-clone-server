@@ -4,10 +4,10 @@ import (
 	"gorm.io/gorm"
 )
 
-type Permissions struct {
+type Permission struct {
 	gorm.Model
-	Name       string   `json:"name"`
-	Permission string   `json:"permission"`
-	Detail     string   `json:"detail"`
-	Roles      []*Roles `gorm:"many2many:role_permissions"`
+	Name       string  `json:"name"`
+	Permission string  `json:"permission"`
+	Detail     string  `json:"detail"`
+	Roles      []*Role `gorm:"many2many:role_permissions"`
 }
