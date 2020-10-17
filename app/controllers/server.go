@@ -28,6 +28,7 @@ func ServerCreate(r repositories.ServerRepo) gin.HandlerFunc {
 		server := models.Server{
 			Name:    p.Name,
 			Private: p.Private,
+			User_ID: user.ID,
 		}
 		if err := r.Create(&server); err != nil {
 			RespondBadRequestError(c, err, "Error creating server")
