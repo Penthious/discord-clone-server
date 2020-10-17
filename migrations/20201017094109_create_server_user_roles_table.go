@@ -14,7 +14,7 @@ func Up20201017094109(tx *sql.Tx) error {
 	// This code is executed when the migration is applied.
 	_, err := tx.Exec(`
 CREATE TABLE server_user_roles (
-  id         int(11) NOT NULL,
+  id         int(11) NOT NULL AUTO_INCREMENT,
   server_id  int(11) NOT NULL,
   user_id    int(11) NOT NULL,
   role_id    int(11) NOT NULL,

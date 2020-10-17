@@ -15,6 +15,7 @@ type User struct {
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
 	Servers   []*Server `gorm:"many2many:server_users"`
+	Roles     []*Role   `gorm:"many2many:server_user_roles"`
 }
 
 func (u *User) BeforeCreate(db *gorm.DB) (err error) {
