@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"discord-clone-server/models"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -16,6 +17,8 @@ type RoleRepo interface {
 	Create(*models.Role) error
 	Get() ([]models.Role, error)
 	Find(params RoleFindParams) (models.Role, error)
+	GetUserServerRoles(uint, uint) ([]models.Role, error)
+	AttachServerRoles([]models.ServerUserRole) (models.User, error)
 }
 
 type roleRepo struct {
@@ -55,4 +58,35 @@ func (r roleRepo) Find(p RoleFindParams) (models.Role, error) {
 	}
 
 	return role, nil
+}
+
+// GetUserServerRoles : Finds all roles of a user for a given server
+func (r roleRepo) GetUserServerRoles(userID uint, serverID uint) ([]models.Role, error) {
+	query := `
+SELECT r.name, r.id FROM servers AS s
+JOIN server_users AS su ON s.id = su.server_id
+JOIN server_user_roles sur ON s.id = sur.server_id
+JOIN roles as r ON sur.role_id = r.id
+where su.user_id = ?
+and r.server_id = ?
+`
+
+	var userRoles []models.Role
+	r.DB.Raw(query, userID, serverID).Scan(&userRoles)
+
+	fmt.Printf("userRoles: %v\n", userRoles)
+
+	return userRoles, nil
+}
+
+// AttachServerRoles : Attaches roles to a server
+func (r roleRepo) AttachServerRoles(sur []models.ServerUserRole) (models.User, error) {
+
+	var user models.User
+	for _, s := range sur {
+		fmt.Print(s)
+		r.DB.Exec("INSERT INTO `server_user_roles` (`server_id`, `user_id`, `role_id`) VALUES (?, ?, ?)", s.ServerID, s.UserID, s.RoleID)
+
+	}
+	return user, nil
 }

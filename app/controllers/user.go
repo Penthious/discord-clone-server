@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// UserIndex : Returns all users
 func UserIndex(r repositories.UserRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		users, err := r.Get()
@@ -22,6 +23,7 @@ func UserIndex(r repositories.UserRepo) gin.HandlerFunc {
 	}
 }
 
+// userCreateParams : Params to use when creating a user
 type userCreateParams struct {
 	FirstName string `json:"first_name" binding:"required"`
 	LastName  string `json:"last_name" binding:"required"`
@@ -30,6 +32,7 @@ type userCreateParams struct {
 	Password  string `json:"password" binding:"required,min=8,max=36"`
 }
 
+// UserCreate : Creates a new user
 func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var p userCreateParams
@@ -55,12 +58,14 @@ func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 	}
 }
 
+// loginParams : Params to use when loging in a user
 type loginParams struct {
 	Username string `json:"username" binding:"required_without=Email"`
 	Email    string `json:"email" binding:"required_without=Username"`
 	Password string `json:"password" binding:"required"`
 }
 
+// Login : Tries to log in a user and set user to session
 func Login(ur repositories.UserRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var p loginParams
@@ -87,6 +92,7 @@ func Login(ur repositories.UserRepo) gin.HandlerFunc {
 	}
 }
 
+// Logout : Removes users session
 func Logout(c *gin.Context) {
 	SessionRemove(USER_KEY, c)
 	RespondStatusAccepted(c, "message", "ok")

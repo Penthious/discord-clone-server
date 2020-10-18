@@ -12,7 +12,7 @@ type serverCreateParams struct {
 	Private bool   `json:"private"`
 }
 
-func ServerCreate(rs repositories.ServerRepo, rp repositories.PermissionRepo, ru repositories.UserRepo) gin.HandlerFunc {
+func ServerCreate(rs repositories.ServerRepo, rp repositories.PermissionRepo, ru repositories.UserRepo, rr repositories.RoleRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user, err := GetUserContext(c)
 		if err != nil {
@@ -54,14 +54,21 @@ func ServerCreate(rs repositories.ServerRepo, rp repositories.PermissionRepo, ru
 			return
 		}
 		// attach server role admin to current user
-		ru.AttachServerRoles([]models.ServerUserRole{
+		rr.AttachServerRoles([]models.ServerUserRole{
 			{
 				ServerID: server.ID,
 				UserID:   user.ID,
 				RoleID:   server.Roles[0].ID,
 			},
 		})
+
 		RespondStatusCreated(c, "server", server)
 		return
+	}
+}
+
+func InviteUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
 	}
 }

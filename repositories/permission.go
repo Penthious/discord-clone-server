@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"discord-clone-server/models"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -16,6 +17,7 @@ type PermissionRepo interface {
 	Create(*models.Permission) error
 	Get() ([]models.Permission, error)
 	Find(params PermissionFindParams) (models.Permission, error)
+	GetUserServerPermissions(uint, uint) ([]models.Permission, error)
 }
 
 type permissionRepo struct {
@@ -55,4 +57,26 @@ func (r permissionRepo) Find(p PermissionFindParams) (models.Permission, error) 
 	}
 
 	return permission, nil
+}
+
+// GetUserServerPermissions : Finds all permissions a user has for a given server
+func (r permissionRepo) GetUserServerPermissions(userID uint, serverID uint) ([]models.Permission, error) {
+	query := `
+SELECT p.name, p.detail, p.permission, p.id FROM servers AS s
+JOIN server_users AS su on s.id = su.server_id
+join server_user_roles sur on s.id = sur.server_id
+join roles as r on sur.role_id = r.id
+join role_permissions rp on r.id = rp.role_id
+join permissions p on rp.permission_id = p.id
+where su.user_id = 1
+and r.server_id = 1
+group by p.id
+`
+
+	var userPermissions []models.Permission
+	r.DB.Raw(query, userID, serverID).Scan(&userPermissions)
+
+	fmt.Printf("userRoles: %v\n", userPermissions)
+
+	return userPermissions, nil
 }

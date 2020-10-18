@@ -9,11 +9,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// thing
+// InitRouter : Sets up all routes
 func InitRouter(s Services) (*gin.Engine, error) {
 
 	r := gin.Default()
 	r.Use(sessions.Sessions("discord_clone_session", sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))))
+
+	BaseRoutes(r, s)
+	ServerRoutes(r, s)
+	UserRoutes(r, s)
+
+	return r, nil
+}
+
+// BaseRoutes : Sets up routes that dont really belong to anything
+func BaseRoutes(r *gin.Engine, s Services) {
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",
@@ -22,18 +32,19 @@ func InitRouter(s Services) (*gin.Engine, error) {
 	r.POST("/login", controllers.Login(s.UserRepo))
 	r.POST("/logout", controllers.Logout)
 
-	r.GET("/users", controllers.UserIndex(s.UserRepo))
-	r.POST("/users", controllers.UserCreate(s.UserRepo))
-
-	auth := r.Group("/auth")
-	auth.Use(AuthMiddleware(s.UserRepo))
-	{
-		auth.GET("/status", status)
-		auth.POST("/servers", controllers.ServerCreate(s.ServerRepo, s.PermissionRepo, s.UserRepo))
-	}
-	return r, nil
 }
 
-func status(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"status": "You are logged in"})
+// ServerRoutes : Sets up the server routes
+func ServerRoutes(r *gin.Engine, s Services) {
+	server := r.Group("/servers")
+	server.Use(AuthMiddleware(s.UserRepo))
+	{
+		server.POST("/", controllers.ServerCreate(s.ServerRepo, s.PermissionRepo, s.UserRepo, s.RoleRepo))
+	}
+}
+
+// UserRoutes : Sets up the user routes
+func UserRoutes(r *gin.Engine, s Services) {
+	r.GET("/users", controllers.UserIndex(s.UserRepo))
+	r.POST("/users", controllers.UserCreate(s.UserRepo))
 }

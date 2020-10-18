@@ -19,6 +19,12 @@ func RespondInternalServerError(c *gin.Context, err error, message string) {
 	fmt.Printf("error: %v\n", err.Error())
 }
 
+// RespondUnauthorizedError : Respond with a unauthorized error
+func RespondUnauthorizedError(c *gin.Context, err error, message string) {
+	c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+	fmt.Printf("error: %v\n", err.Error())
+}
+
 // RespondStatusCreated : Respond with status created
 func RespondStatusCreated(c *gin.Context, key string, data interface{}) {
 	c.JSON(http.StatusCreated, gin.H{

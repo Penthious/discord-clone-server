@@ -3,33 +3,32 @@ package app
 import (
 	"discord-clone-server/app/controllers"
 	"discord-clone-server/repositories"
-	"net/http"
+	"errors"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
+// AuthMiddleware : Middleware to check if user is logged in via session
 func AuthMiddleware(ur repositories.UserRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
 		userCookieID := session.Get(controllers.USER_KEY)
 		if userCookieID == nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+			controllers.RespondUnauthorizedError(c, errors.New("User cookie not found"), "unauthorized")
 			return
 		}
 		if userCookieID == 0 {
-			// Abort the request with the appropriate error code
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+			controllers.RespondUnauthorizedError(c, errors.New("User cookie is 0"), "unauthorized")
 			return
 		}
 		userFindParams := repositories.UserFindParams{ID: userCookieID.(uint)}
 		user, err := ur.Find(userFindParams)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+			controllers.RespondUnauthorizedError(c, err, "unauthorized")
 			return
 		}
 		c.Set(controllers.USER_KEY, user)
-		// Continue down the chain to handler etc
 		c.Next()
 	}
 }
