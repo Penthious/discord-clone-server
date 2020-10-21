@@ -1,4 +1,4 @@
-package controllers
+package services
 
 import (
 	"github.com/gin-gonic/contrib/sessions"

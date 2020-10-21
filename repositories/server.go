@@ -15,6 +15,7 @@ func NewServerRepo(db *gorm.DB) ServerRepo {
 type ServerRepo interface {
 	Create(*models.Server) error
 	Append(*models.User, models.Server) error
+	Find(int, *models.Server) error
 }
 
 type serverRepo struct {
@@ -27,4 +28,8 @@ func (r serverRepo) Append(user *models.User, server models.Server) error {
 
 func (r serverRepo) Create(server *models.Server) error {
 	return r.DB.Create(&server).Error
+}
+
+func (r serverRepo) Find(serverID int, server *models.Server) error {
+	return r.DB.Where("id = ?", serverID).Find(&server).Error
 }

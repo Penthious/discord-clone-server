@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"discord-clone-server/app/services"
 	"discord-clone-server/models"
 	"discord-clone-server/repositories"
 	"net/http"
@@ -37,7 +38,7 @@ func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var p userCreateParams
 		if err := c.ShouldBind(&p); err != nil {
-			RespondBadRequestError(c, err, err.Error())
+			services.RespondBadRequestError(c, err, err.Error())
 			return
 		}
 
@@ -49,12 +50,12 @@ func UserCreate(r repositories.UserRepo) gin.HandlerFunc {
 			Password:  p.Password,
 		}
 		if err := r.Create(&user); err != nil {
-			RespondBadRequestError(c, err, "Error creating user")
+			services.RespondBadRequestError(c, err, "Error creating user")
 			return
 		}
 
-		SetSession(USER_KEY, user.ID, c)
-		RespondStatusCreated(c, "user", user)
+		services.SetSession(services.USER_KEY, user.ID, c)
+		services.RespondStatusCreated(c, "user", user)
 	}
 }
 
@@ -70,31 +71,31 @@ func Login(ur repositories.UserRepo) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var p loginParams
 		if err := c.ShouldBind(&p); err != nil {
-			RespondBadRequestError(c, err, err.Error())
+			services.RespondBadRequestError(c, err, err.Error())
 			return
 		}
 		userFindParams := repositories.UserFindParams{Email: p.Email, Username: p.Username}
 		user, err := ur.Find(userFindParams)
 		if err != nil {
-			RespondBadRequestError(c, err, "Error finding user")
+			services.RespondBadRequestError(c, err, "Error finding user")
 			return
 
 		}
 
 		if err := user.CheckPassword(p.Password); err != nil {
-			RespondBadRequestError(c, err, "Error password or email mismatch")
+			services.RespondBadRequestError(c, err, "Error password or email mismatch")
 		}
 
-		SetSession(USER_KEY, user.ID, c)
+		services.SetSession(services.USER_KEY, user.ID, c)
 
-		RespondStatusOK(c, "user", user)
+		services.RespondStatusOK(c, "user", user)
 		return
 	}
 }
 
 // Logout : Removes users session
 func Logout(c *gin.Context) {
-	SessionRemove(USER_KEY, c)
-	RespondStatusAccepted(c, "message", "ok")
+	services.SessionRemove(services.USER_KEY, c)
+	services.RespondStatusAccepted(c, "message", "ok")
 	return
 }

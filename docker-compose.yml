@@ -11,15 +11,12 @@ services:
         container_name: discord_clone_server
         volumes:
             - ./:/app
-        environment: 
-            WAIT_HOSTS: db:3306
-            DB_ADDR: db
-            DB_NAME: discord_clone
-            DB_PASSWORD: secret
-            DB_USER: root
-            SESSION_SECRET: super_secret_session_key
+        env_file:
+            - .env
         ports:
             - "3000:3000"
+
+# App services
     db:
         image: mysql:5.7
         container_name: discord_clone_db
@@ -30,3 +27,8 @@ services:
         - "3306:3306"
         volumes:
         - db-volume:/var/lib/mysql
+    redis:
+        image: 'bitnami/redis:latest'
+        environment: 
+            - REDIS_PASSWORD=secret
+            - ALLOW_EMPTY_PASSWORD=yes

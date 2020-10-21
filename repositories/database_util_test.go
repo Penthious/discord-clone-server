@@ -5,7 +5,6 @@ import (
 	"discord-clone-server/utils"
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
 	"testing"
 	"time"
@@ -74,17 +73,6 @@ func InitTestDB(t *testing.T, dbName string) *gorm.DB {
 
 	fmt.Printf("db: %v", db.Name())
 	return db
-}
-
-func GetDBName(prefix string) string {
-	length := 6
-	charset := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	runes := make([]rune, length)
-	for i := 0; i < length; i++ {
-		runes[i] = rune(charset[rand.Intn(len(charset))])
-	}
-
-	return fmt.Sprintf("%s_%s", prefix, string(runes))
 }
 
 func DropTestDB(t *testing.T, db *gorm.DB, dbName string) {

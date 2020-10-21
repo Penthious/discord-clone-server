@@ -2,11 +2,12 @@ package repositories
 
 import (
 	"discord-clone-server/models"
+	"discord-clone-server/utils"
 	"testing"
 )
 
 func Test_UserRepo_Get(t *testing.T) {
-	dbName := GetDBName(t.Name())
+	dbName := utils.GetRandomString(t.Name(), 6)
 	db := InitTestDB(t, dbName)
 	defer DropTestDB(t, db, dbName)
 	users := []models.User{
@@ -29,7 +30,7 @@ func Test_UserRepo_Get(t *testing.T) {
 }
 
 func Test_UserRepo_Create(t *testing.T) {
-	dbName := GetDBName(t.Name())
+	dbName := utils.GetRandomString(t.Name(), 6)
 	db := InitTestDB(t, dbName)
 	defer DropTestDB(t, db, dbName)
 	user := models.User{FirstName: "Bob1", LastName: "bobbers", Username: "bobbers1", Password: "test", Email: "bob1@bob.com"}
