@@ -6,7 +6,7 @@ import (
 )
 
 // USER_KEY : The session key to grab current logged in user
-const USER_KEY = "USER_KEY"
+const USER_KEY string = "USER_KEY"
 
 // SetSession : Adds a session key and value to the session
 func SetSession(key string, value interface{}, c *gin.Context) {

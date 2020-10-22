@@ -40,7 +40,8 @@ func ServerRoutes(r *gin.Engine, s Services) {
 	server.Use(AuthMiddleware(s.UserRepo))
 	{
 		server.POST("/", controllers.ServerCreate(s.ServerRepo, s.PermissionRepo, s.UserRepo, s.RoleRepo))
-		server.POST("/invite", controllers.InviteUser(s.ServerRepo, s.Redis))
+		server.POST("/invite", controllers.InviteUser(s.ServerRepo, s.PermissionRepo, s.Redis))
+		server.POST("/join", controllers.JoinServer(s.ServerRepo, s.RoleRepo, s.Redis))
 	}
 }
 

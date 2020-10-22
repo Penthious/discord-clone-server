@@ -19,6 +19,8 @@ type RoleRepo interface {
 	Find(params RoleFindParams) (models.Role, error)
 	GetUserServerRoles(uint, uint) ([]models.Role, error)
 	AttachServerRoles([]models.ServerUserRole) (models.User, error)
+	CreateAdminRole() (models.Role, error)
+	CreateBaseRole() (models.Role, error)
 }
 
 type roleRepo struct {
@@ -89,4 +91,50 @@ func (r roleRepo) AttachServerRoles(sur []models.ServerUserRole) (models.User, e
 
 	}
 	return user, nil
+}
+
+func (r roleRepo) CreateAdminRole() (models.Role, error) {
+	var permissions []*models.Permission
+	permissionsList := []string{"admin"}
+	tx := r.DB.Where("permission = ?", permissionsList).First(&permissions)
+	if err := tx.Error; err != nil {
+		return models.Role{}, tx.Error
+	}
+
+	role := models.Role{
+		Name:        "Admin",
+		Permissions: permissions,
+	}
+
+	return role, tx.Error
+}
+
+func (r roleRepo) CreateBaseRole() (models.Role, error) {
+	var permissions []*models.Permission
+	permissionsList := []string{
+		"create_invite",
+		"manage_emojis",
+		"read_channels",
+		"send_message",
+		"embed_link",
+		"attach_file",
+		"read_message_history",
+		"external_emojis",
+		"use_mentions",
+		"add_reaction",
+		"connect",
+		"speak",
+		"video",
+	}
+	tx := r.DB.Where("permission IN ?", permissionsList).Find(&permissions)
+	if err := tx.Error; err != nil {
+		return models.Role{}, tx.Error
+	}
+
+	role := models.Role{
+		Name:        "everyone",
+		Permissions: permissions,
+	}
+
+	return role, tx.Error
 }

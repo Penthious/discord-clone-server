@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"discord-clone-server/models"
+	"errors"
 	"fmt"
 
 	"gorm.io/gorm"
@@ -18,6 +19,8 @@ type PermissionRepo interface {
 	Get() ([]models.Permission, error)
 	Find(params PermissionFindParams) (models.Permission, error)
 	GetUserServerPermissions(uint, uint) ([]models.Permission, error)
+	CanAccess(required []models.Permission, userPerms []models.Permission) error
+	InviteUserPermission() ([]models.Permission, error)
 }
 
 type permissionRepo struct {
@@ -79,4 +82,34 @@ group by p.id
 	fmt.Printf("userRoles: %v\n", userPermissions)
 
 	return userPermissions, nil
+}
+
+func (r permissionRepo) CanAccess(requiredPermissions []models.Permission, userPermissions []models.Permission) error {
+	for _, p := range userPermissions {
+		if p.Permission == "admin" {
+			return nil
+		}
+	}
+
+	var found []bool
+	for _, p := range userPermissions {
+		for _, r := range requiredPermissions {
+			if p.Permission == r.Permission {
+				found = append(found, true)
+			}
+		}
+	}
+	if len(found) != len(requiredPermissions) {
+		return errors.New("Permission's mismatch")
+	}
+
+	return nil
+}
+
+func (r permissionRepo) InviteUserPermission() ([]models.Permission, error) {
+	var perms []models.Permission
+	var canInvitePerms = []string{"can_invite"}
+	err := r.DB.Where("permission IN ?", canInvitePerms).Find(&perms)
+
+	return perms, err.Error
 }

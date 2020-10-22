@@ -16,6 +16,7 @@ func main() {
 	rootCmd.AddCommand(
 		cmd.ServerCmd,
 		cmd.MigrateCmd,
+		cmd.SeedCmd,
 	)
 
 	if err := rootCmd.Execute(); err != nil {
