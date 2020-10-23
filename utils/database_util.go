@@ -1,8 +1,7 @@
-package repositories
+package utils
 
 import (
 	"discord-clone-server/models"
-	"discord-clone-server/utils"
 	"fmt"
 	"log"
 	"os"
@@ -13,6 +12,8 @@ import (
 
 	"github.com/pressly/goose"
 
+	"github.com/alicebob/miniredis"
+	"github.com/go-redis/redis/v8"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -29,7 +30,7 @@ func InitTestDB(t *testing.T, dbName string) *gorm.DB {
 		},
 	)
 
-	dsn = utils.GetMysqlDSN("")
+	dsn = GetMysqlDSN("")
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger:                 newLogger,
@@ -88,4 +89,15 @@ func MakeTestUsers(t *testing.T, db *gorm.DB, users []models.User) {
 	if err := tx.Error; err != nil {
 		t.Fatalf("error creating users: %s", err.Error())
 	}
+}
+
+func NewTestRedis() *redis.Client {
+	mr, err := miniredis.Run()
+	if err != nil {
+		panic(err)
+	}
+	return redis.NewClient(&redis.Options{
+		Addr: mr.Addr(),
+	})
+	// return redismock.NewNiceMock(client)
 }

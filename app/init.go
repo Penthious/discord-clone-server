@@ -25,24 +25,6 @@ type Services struct {
 	PermissionRepo repositories.PermissionRepo
 }
 
-/*
-func initRedisClient() (*redis.Client, error) {
-	redisDB, err := util.GetEnvIntE("REDIS_DB")
-	if err != nil {
-		return nil, errors.Wrap(err, "error getting configured redis DB")
-	}
-	cl := redis.NewClient(&redis.Options{
-		Addr:        os.Getenv("REDIS_ADDR"),
-		DB:          redisDB,
-		DialTimeout: util.GetEnvDurationD("REDIS_DIAL_TIMEOUT", 100*time.Millisecond),
-	})
-	if err := cl.Ping().Err(); err != nil {
-		return nil, errors.Wrap(err, "error connecting to redis")
-	}
-	return cl, nil
-}
-*/
-
 func InitServices() (Services, error) {
 	var s Services
 	var err error

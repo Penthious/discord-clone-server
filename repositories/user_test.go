@@ -8,8 +8,8 @@ import (
 
 func Test_UserRepo_Get(t *testing.T) {
 	dbName := utils.GetRandomString(t.Name(), 6)
-	db := InitTestDB(t, dbName)
-	defer DropTestDB(t, db, dbName)
+	db := utils.InitTestDB(t, dbName)
+	defer utils.DropTestDB(t, db, dbName)
 	users := []models.User{
 		{FirstName: "Bob1", LastName: "bobbers", Username: "bobbers1", Password: "test", Email: "bob1@bob.com"},
 		{FirstName: "Bob2", LastName: "bobbers", Username: "bobbers2", Password: "test", Email: "bob2@bob.com"},
@@ -17,7 +17,7 @@ func Test_UserRepo_Get(t *testing.T) {
 	}
 	userRepo := NewUserRepo(db)
 
-	MakeTestUsers(t, db, users)
+	utils.MakeTestUsers(t, db, users)
 
 	dbUsers, err := userRepo.Get()
 	if err != nil {
@@ -31,8 +31,8 @@ func Test_UserRepo_Get(t *testing.T) {
 
 func Test_UserRepo_Create(t *testing.T) {
 	dbName := utils.GetRandomString(t.Name(), 6)
-	db := InitTestDB(t, dbName)
-	defer DropTestDB(t, db, dbName)
+	db := utils.InitTestDB(t, dbName)
+	defer utils.DropTestDB(t, db, dbName)
 	user := models.User{FirstName: "Bob1", LastName: "bobbers", Username: "bobbers1", Password: "test", Email: "bob1@bob.com"}
 	userRepo := NewUserRepo(db)
 
