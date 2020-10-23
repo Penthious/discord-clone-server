@@ -13,7 +13,7 @@ type User struct {
 	LastName  string    `json:"last_name"`
 	Username  string    `json:"username"`
 	Email     string    `json:"email"`
-	Password  string    `json:"password"`
+	Password  string    `json:"-"`
 	Servers   []*Server `gorm:"many2many:server_users"`
 	Roles     []*Role   `gorm:"many2many:server_user_roles"`
 }

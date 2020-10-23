@@ -22,7 +22,14 @@ func Server(_ *cobra.Command, _ []string) error {
 	if err != nil {
 		return err
 	}
-	r.Run()
 
+	db, err := s.DB.DB()
+	if err != nil {
+		return err
+	}
+
+	defer db.Close()
+
+	r.Run()
 	return nil
 }

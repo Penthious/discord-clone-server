@@ -245,3 +245,60 @@ func (s *e2eTestSuite) Test_EndToEnd_UserCreate__PasswordMustBeShorterThan36Erro
 	s.NoError(json.NewDecoder(resp.Body).Decode(&r))
 	assert.Equal(s.T(), "Key: 'userCreateParams.Password' Error:Field validation for 'Password' failed on the 'max' tag", r.Error)
 }
+
+func (s *e2eTestSuite) Test_EndToEnd_Login__WithUsername() {
+	user := models.User{
+		FirstName: "Bobs",
+		LastName:  "Bobbers",
+		Username:  "bobbies",
+		Email:     "bob@bobers.com",
+		Password:  "password",
+	}
+	s.DB.Create(&user)
+	requestBody, err := json.Marshal(map[string]string{
+		"username": "bobbies",
+		"password": "password",
+	})
+	s.NoError(err)
+	resp, err := http.Post(fmt.Sprintf("%s/login", s.server.URL), "application/json", bytes.NewBuffer(requestBody))
+	s.NoError(err)
+	assert.Equal(s.T(), 200, resp.StatusCode)
+	type httpResp struct {
+		User models.User `json:"user"`
+	}
+	var r httpResp
+
+	s.NoError(json.NewDecoder(resp.Body).Decode(&r))
+
+	assert.Equal(s.T(), "bobbies", r.User.Username)
+	assert.Equal(s.T(), "", r.User.Password)
+}
+
+func (s *e2eTestSuite) Test_EndToEnd_Login__WithEmail() {
+	user := models.User{
+		FirstName: "Bobs",
+		LastName:  "Bobbers",
+		Username:  "bobbies",
+		Email:     "bob@bobers.com",
+		Password:  "password",
+	}
+	s.DB.Create(&user)
+	requestBody, err := json.Marshal(map[string]string{
+		"email":    "bob@bobers.com",
+		"password": "password",
+	})
+	s.NoError(err)
+	resp, err := http.Post(fmt.Sprintf("%s/login", s.server.URL), "application/json", bytes.NewBuffer(requestBody))
+	s.NoError(err)
+	assert.Equal(s.T(), 200, resp.StatusCode)
+	type httpResp struct {
+		User models.User `json:"user"`
+	}
+	var r httpResp
+
+	s.NoError(json.NewDecoder(resp.Body).Decode(&r))
+
+	assert.Equal(s.T(), "bobbies", r.User.Username)
+	assert.Equal(s.T(), "", r.User.Password)
+
+}

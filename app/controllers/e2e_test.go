@@ -3,6 +3,7 @@ package controllers_test
 import (
 	"discord-clone-server/app"
 	_ "discord-clone-server/migrations"
+	"discord-clone-server/seeder"
 	"discord-clone-server/utils"
 	"fmt"
 	"net/http/httptest"
@@ -20,7 +21,6 @@ type e2eTestSuite struct {
 	server          *httptest.Server
 	dbName          string
 	DB              *gorm.DB
-	// dbMigration     *migrate.Migrate
 }
 
 func TestE2ETestSuite(t *testing.T) {
@@ -29,7 +29,6 @@ func TestE2ETestSuite(t *testing.T) {
 }
 func (s *e2eTestSuite) SetupSuite() {
 	var services app.Services
-	// var err error
 
 	s.dbName = utils.GetRandomString(s.T().Name(), 6)
 	services.DB = utils.InitTestDB(s.T(), s.dbName)
@@ -43,11 +42,15 @@ func (s *e2eTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 	ts := httptest.NewServer(r)
 	s.server = ts
+
 }
 
 func (s *e2eTestSuite) TearDownSuite() {
-	fmt.Print("\n\n\nTestE2ETestSuite: teardown\n")
 	utils.DropTestDB(s.T(), s.DB, s.dbName)
+	db, err := s.DB.DB()
+	s.NoError(err)
+	db.Close()
+
 	s.server.Close()
 	// p, _ := os.FindProcess(syscall.Getpid())
 	// p.Signal(syscall.SIGINT)
@@ -57,6 +60,7 @@ func (s *e2eTestSuite) SetupTest() {
 	sqlDB, err := s.DB.DB()
 	s.NoError(err)
 	goose.Run("up", sqlDB, ".", "")
+	seeder.PermissionsSeeder(s.DB)
 	// if err := s.dbMigration.Up(); err != nil && err != migrate.ErrNoChange {
 	// 	s.Require().NoError(err)
 	// }
