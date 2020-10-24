@@ -19,6 +19,7 @@ type e2eTestSuite struct {
 	dbConnectionStr string
 	port            int
 	server          *httptest.Server
+	Services        app.Services
 	dbName          string
 	DB              *gorm.DB
 }
@@ -41,6 +42,7 @@ func (s *e2eTestSuite) SetupSuite() {
 	r, err := app.InitRouter(services)
 	s.Require().NoError(err)
 	ts := httptest.NewServer(r)
+	s.Services = services
 	s.server = ts
 
 }

@@ -17,7 +17,7 @@ type RoleRepo interface {
 	Create(*models.Role) error
 	Get() ([]models.Role, error)
 	Find(params RoleFindParams) (models.Role, error)
-	GetUserServerRoles(uint, uint) ([]models.Role, error)
+	GetUserServerRoles(userID uint, serverID uint) ([]models.Role, error)
 	AttachServerRoles([]models.ServerUserRole) (models.User, error)
 	CreateAdminRole() (models.Role, error)
 	CreateBaseRole() (models.Role, error)

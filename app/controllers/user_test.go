@@ -301,4 +301,8 @@ func (s *e2eTestSuite) Test_EndToEnd_Login__WithEmail() {
 	assert.Equal(s.T(), "bobbies", r.User.Username)
 	assert.Equal(s.T(), "", r.User.Password)
 
+	for _, cookie := range resp.Cookies() {
+		assert.Equal(s.T(), "discord_clone_session", cookie.Name)
+	}
+
 }
