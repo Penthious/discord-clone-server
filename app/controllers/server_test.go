@@ -61,6 +61,7 @@ func (s *e2eTestSuite) Test_EndToEnd_ServerCreate() {
 	err = s.DB.Find(&dbServers).Error
 	s.NoError(err)
 	assert.Equal(s.T(), 1, len(dbServers))
+	assert.Equal(s.T(), false, dbServers[0].Private)
 
 	// Assert that we created 2 roles
 	var dbRoles []models.Role
@@ -69,7 +70,11 @@ func (s *e2eTestSuite) Test_EndToEnd_ServerCreate() {
 	assert.Equal(s.T(), 2, len(dbRoles))
 
 	// Assert that the created roles are attached to the created server
-	// @todo: add in a way to get all roles attached to a server
+	roles, err := s.Services.RoleRepo.GetServerRoles(&dbServers[0])
+	s.NoError(err)
+	assert.Equal(s.T(), 2, len(roles))
+	assert.Equal(s.T(), "Admin", roles[0].Name)
+	assert.Equal(s.T(), "Base", roles[1].Name)
 
 	// Assert that role admin was added to this user
 	userRoles, err := s.Services.RoleRepo.GetUserServerRoles(user.ID, dbServers[0].ID)

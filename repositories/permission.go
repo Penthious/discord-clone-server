@@ -21,6 +21,7 @@ type PermissionRepo interface {
 	GetUserServerPermissions(uint, uint) ([]models.Permission, error)
 	CanAccess(required []models.Permission, userPerms []models.Permission) error
 	InviteUserPermission() ([]models.Permission, error)
+	GetRolePermissions(role *models.Role) ([]models.Permission, error)
 }
 
 type permissionRepo struct {
@@ -82,6 +83,12 @@ group by p.id
 	fmt.Printf("userRoles: %v\n", userPermissions)
 
 	return userPermissions, nil
+}
+
+func (r permissionRepo) GetRolePermissions(role *models.Role) ([]models.Permission, error) {
+	var permissions []models.Permission
+	err := r.DB.Model(&role).Association("Permissions").Find(&permissions)
+	return permissions, err
 }
 
 func (r permissionRepo) CanAccess(requiredPermissions []models.Permission, userPermissions []models.Permission) error {

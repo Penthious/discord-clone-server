@@ -61,7 +61,7 @@ func ServerCreate(rs repositories.ServerRepo, rp repositories.PermissionRepo, ru
 			return
 		}
 
-		if err := rs.Append(&user, server); err != nil {
+		if err := rs.Append(user, &server); err != nil {
 			services.RespondBadRequestError(c, err, "Error setting user to server")
 			return
 		}
@@ -235,7 +235,7 @@ func JoinServer(rs repositories.ServerRepo, rr repositories.RoleRepo, r *redis.C
 			}
 		}
 
-		if err := rs.Append(&user, server); err != nil {
+		if err := rs.Append(user, &server); err != nil {
 			services.RespondBadRequestError(c, err, "Error setting user to server")
 			return
 		}

@@ -21,6 +21,7 @@ type RoleRepo interface {
 	AttachServerRoles([]models.ServerUserRole) (models.User, error)
 	CreateAdminRole() (models.Role, error)
 	CreateBaseRole() (models.Role, error)
+	GetServerRoles(server *models.Server) ([]models.Role, error)
 }
 
 type roleRepo struct {
@@ -93,6 +94,12 @@ func (r roleRepo) AttachServerRoles(sur []models.ServerUserRole) (models.User, e
 	return user, nil
 }
 
+func (r roleRepo) GetServerRoles(server *models.Server) ([]models.Role, error) {
+	var roles []models.Role
+	err := r.DB.Model(&server).Association("Roles").Find(&roles)
+	return roles, err
+}
+
 func (r roleRepo) CreateAdminRole() (models.Role, error) {
 	var permissions []*models.Permission
 	permissionsList := []string{"admin"}
@@ -132,7 +139,7 @@ func (r roleRepo) CreateBaseRole() (models.Role, error) {
 	}
 
 	role := models.Role{
-		Name:        "everyone",
+		Name:        "Base",
 		Permissions: permissions,
 	}
 

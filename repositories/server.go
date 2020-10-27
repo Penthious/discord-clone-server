@@ -15,7 +15,7 @@ func NewServerRepo(db *gorm.DB) ServerRepo {
 
 type ServerRepo interface {
 	Create(*models.Server) error
-	Append(*models.User, models.Server) error
+	Append(models.User, *models.Server) error
 	Find(uint, *models.Server) error
 	UserExistsOnServer(*models.Server, models.User) error
 }
@@ -24,8 +24,8 @@ type serverRepo struct {
 	DB *gorm.DB
 }
 
-func (r serverRepo) Append(user *models.User, server models.Server) error {
-	return r.DB.Model(&user).Association("Servers").Append(&server)
+func (r serverRepo) Append(user models.User, server *models.Server) error {
+	return r.DB.Model(&server).Association("Users").Append(&user)
 }
 
 func (r serverRepo) Create(server *models.Server) error {
