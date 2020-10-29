@@ -6,6 +6,7 @@ import (
 	"discord-clone-server/seeder"
 	"discord-clone-server/utils"
 	"fmt"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -45,6 +46,13 @@ func (s *e2eTestSuite) SetupSuite() {
 	s.Services = services
 	s.server = ts
 
+}
+
+func performRequest(r http.Handler, path string) *httptest.ResponseRecorder {
+	req, _ := http.NewRequest(http.MethodGet, path, nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	return w
 }
 
 func (s *e2eTestSuite) TearDownSuite() {

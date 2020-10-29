@@ -115,8 +115,8 @@ func (r permissionRepo) CanAccess(requiredPermissions []models.Permission, userP
 
 func (r permissionRepo) InviteUserPermission() ([]models.Permission, error) {
 	var perms []models.Permission
-	var canInvitePerms = []string{"can_invite"}
-	err := r.DB.Where("permission IN ?", canInvitePerms).Find(&perms)
+	var canInvitePerms = []string{"create_invite"}
+	tx := r.DB.Where("permission IN ?", canInvitePerms).Find(&perms)
 
-	return perms, err.Error
+	return perms, tx.Error
 }

@@ -66,13 +66,17 @@ func ServerCreate(rs repositories.ServerRepo, rp repositories.PermissionRepo, ru
 			return
 		}
 		// attach server role admin to current user
-		rr.AttachServerRoles([]models.ServerUserRole{
+		_, err = rr.AttachServerRoles([]models.ServerUserRole{
 			{
 				ServerID: server.ID,
 				UserID:   user.ID,
 				RoleID:   server.Roles[0].ID,
 			},
 		})
+		if err != nil {
+			services.RespondBadRequestError(c, err, "Error attaching role to user")
+			return
+		}
 
 		services.RespondStatusCreated(c, "server", server)
 		return
@@ -141,6 +145,7 @@ func InviteUser(rs repositories.ServerRepo, rp repositories.PermissionRepo, r *r
 			services.RespondBadRequestError(c, err, err.Error())
 			return
 		}
+		// 	"invite_key": "_NfHK5a84jjJk"
 
 		type inviteResponse struct {
 			Invite string `json:"invite"`
