@@ -1,2 +1,5 @@
 .history
 gin-bin
+vendor
+.idea
+dist
