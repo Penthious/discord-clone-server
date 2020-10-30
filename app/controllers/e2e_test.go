@@ -1,16 +1,20 @@
 package controllers_test
 
 import (
+	"bytes"
 	"discord-clone-server/app"
 	_ "discord-clone-server/migrations"
+	"discord-clone-server/models"
 	"discord-clone-server/seeder"
 	"discord-clone-server/utils"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/pressly/goose"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"gorm.io/gorm"
 )
@@ -48,13 +52,6 @@ func (s *e2eTestSuite) SetupSuite() {
 
 }
 
-func performRequest(r http.Handler, path string) *httptest.ResponseRecorder {
-	req, _ := http.NewRequest(http.MethodGet, path, nil)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-	return w
-}
-
 func (s *e2eTestSuite) TearDownSuite() {
 	utils.DropTestDB(s.T(), s.DB, s.dbName)
 	db, err := s.DB.DB()
@@ -62,8 +59,6 @@ func (s *e2eTestSuite) TearDownSuite() {
 	db.Close()
 
 	s.server.Close()
-	// p, _ := os.FindProcess(syscall.Getpid())
-	// p.Signal(syscall.SIGINT)
 }
 
 func (s *e2eTestSuite) SetupTest() {
@@ -71,15 +66,53 @@ func (s *e2eTestSuite) SetupTest() {
 	s.NoError(err)
 	goose.Run("up", sqlDB, ".", "")
 	seeder.PermissionsSeeder(s.DB)
-	// if err := s.dbMigration.Up(); err != nil && err != migrate.ErrNoChange {
-	// 	s.Require().NoError(err)
-	// }
 }
 
 func (s *e2eTestSuite) TearDownTest() {
-	fmt.Print("TestE2ETestSuite: teardown test\n")
 	sqlDB, err := s.DB.DB()
 	s.NoError(err)
 	goose.Run("reset", sqlDB, ".", "")
-	// s.NoError(s.dbMigration.Down())
+}
+
+func GetLoginCookie(s *e2eTestSuite, user models.User) *http.Cookie {
+	requestBody, err := json.Marshal(map[string]string{
+		"email":    user.Email,
+		"password": "password",
+	})
+	s.NoError(err)
+
+	resp, err := http.Post(fmt.Sprintf("%s/login", s.server.URL), "application/json", bytes.NewBuffer(requestBody))
+	assert.Equal(s.T(), 200, resp.StatusCode)
+
+	for _, cookie := range resp.Cookies() {
+		assert.Equal(s.T(), "discord_clone_session", cookie.Name)
+		if cookie.Name == "discord_clone_session" {
+			return &http.Cookie{Name: cookie.Name, Value: cookie.Value}
+		}
+	}
+	return &http.Cookie{}
+}
+
+func CreateTestServer(s *e2eTestSuite, name string, private bool, userID uint) models.Server {
+	adminRole, err := s.Services.RoleRepo.CreateAdminRole()
+	if err != nil {
+		s.NoError(err)
+	}
+
+	baseRole, err := s.Services.RoleRepo.CreateBaseRole()
+	if err != nil {
+		s.NoError(err)
+	}
+	server := models.Server{
+		Name:    name,
+		Private: private,
+		User_ID: userID,
+		Roles: []models.Role{
+			adminRole,
+			baseRole,
+		},
+	}
+	s.DB.Create(&server)
+	return server
+
 }

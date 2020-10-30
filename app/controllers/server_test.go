@@ -2,16 +2,18 @@ package controllers_test
 
 import (
 	"bytes"
+	"discord-clone-server/app/services"
 	"discord-clone-server/models"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func (s *e2eTestSuite) Test_EndToEnd_ServerCreate() {
-	// Create User
+	// setup
 	user := models.User{
 		FirstName: "Bobs",
 		LastName:  "Bobbers",
@@ -21,18 +23,57 @@ func (s *e2eTestSuite) Test_EndToEnd_ServerCreate() {
 	}
 	s.DB.Create(&user)
 
-	// Login user
-	requestBody, err := json.Marshal(map[string]string{
-		"email":    "bob@bobers.com",
-		"password": "password",
+	// run test
+	s.T().Run("Server Create", func(t *testing.T) { ServerCreate(s) })
+	s.T().Run("Server Create - must be logged in - error", func(t *testing.T) { ServerCreate_MustBeLoggedIn(s) })
+}
+
+func (s *e2eTestSuite) Test_EndToEnd_InviteUser() {
+	// setup
+	mainUser := models.User{
+		FirstName: "Bobs",
+		LastName:  "Bobbers",
+		Username:  "bobbies",
+		Email:     "bob@bobers.com",
+		Password:  "password",
+	}
+	invitedUser := models.User{
+		FirstName: "dillian",
+		LastName:  "jones",
+		Username:  "invited",
+		Email:     "someotheruser@bobers.com",
+		Password:  "password",
+	}
+	s.DB.Create(&mainUser)
+	s.DB.Create(&invitedUser)
+	server := CreateTestServer(s, "Test Name", false, mainUser.ID)
+
+	// Append mainUser to server
+	s.NoError(s.Services.ServerRepo.Append(mainUser, &server))
+
+	// assign mainUser to role admin
+	_, err := s.Services.RoleRepo.AttachServerRoles([]models.ServerUserRole{
+		{
+			ServerID: server.ID,
+			UserID:   mainUser.ID,
+			RoleID:   server.Roles[0].ID,
+		},
 	})
 	s.NoError(err)
-	resp, err := http.Post(fmt.Sprintf("%s/login", s.server.URL), "application/json", bytes.NewBuffer(requestBody))
-	assert.Equal(s.T(), 200, resp.StatusCode)
+
+	// run test
+	s.T().Run("Invite User", func(t *testing.T) { InviteUser(s) })
+
+}
+
+func ServerCreate(s *e2eTestSuite) {
+	var user models.User
+	s.DB.Find(&user, 1)
+
 	client := &http.Client{}
 
 	// Prepare the http request for server
-	requestBody, err = json.Marshal(map[string]string{
+	requestBody, err := json.Marshal(map[string]string{
 		"name": "New Server",
 	})
 	s.NoError(err)
@@ -41,13 +82,10 @@ func (s *e2eTestSuite) Test_EndToEnd_ServerCreate() {
 	req.Header.Add("Content-Type", "application/json")
 
 	// Set login cookie to current request
-	for _, cookie := range resp.Cookies() {
-		assert.Equal(s.T(), "discord_clone_session", cookie.Name)
-		req.AddCookie(&http.Cookie{Name: cookie.Name, Value: cookie.Value})
-	}
+	req.AddCookie(GetLoginCookie(s, user))
 
 	// Send off request
-	resp, err = client.Do(req)
+	resp, err := client.Do(req)
 	s.NoError(err)
 
 	assert.Equal(s.T(), 201, resp.StatusCode)
@@ -98,7 +136,7 @@ func (s *e2eTestSuite) Test_EndToEnd_ServerCreate() {
 	// @todo: find out how to check if gin.Context has current user in session
 }
 
-func (s *e2eTestSuite) Test_EndToEnd_ServerCreate_MustBeLoggedIn() {
+func ServerCreate_MustBeLoggedIn(s *e2eTestSuite) {
 	requestBody, err := json.Marshal(map[string]string{
 		"name": "New Server",
 	})
@@ -107,107 +145,48 @@ func (s *e2eTestSuite) Test_EndToEnd_ServerCreate_MustBeLoggedIn() {
 	assert.Equal(s.T(), 401, resp.StatusCode)
 }
 
-func (s *e2eTestSuite) Test_EndToEnd_InviteUser() {
-	// Create User
-	mainUser := models.User{
-		FirstName: "Bobs",
-		LastName:  "Bobbers",
-		Username:  "bobbies",
-		Email:     "bob@bobers.com",
-		Password:  "password",
-	}
-	invitedUser := models.User{
-		FirstName: "Bobs Friend",
-		LastName:  "Bobbers",
-		Username:  "notabob",
-		Email:     "someotheruser@bobers.com",
-		Password:  "password",
-	}
-	s.DB.Create(&mainUser)
-	s.DB.Create(&invitedUser)
-	// Create Server
-	server := CreateTestServer(s, "Test Name", false, mainUser.ID)
+func InviteUser(s *e2eTestSuite) {
 
-	// Append mainUser to server
-	s.NoError(s.Services.ServerRepo.Append(mainUser, &server))
-
-	// assign mainUser to role admin
-	_, err := s.Services.RoleRepo.AttachServerRoles([]models.ServerUserRole{
-		{
-			ServerID: server.ID,
-			UserID:   mainUser.ID,
-			RoleID:   server.Roles[0].ID,
-		},
-	})
-	s.NoError(err)
-
-	// login object
-	requestBody, err := json.Marshal(map[string]string{
-		"email":    "bob@bobers.com",
-		"password": "password",
-	})
-	s.NoError(err)
-
-	resp, err := http.Post(fmt.Sprintf("%s/login", s.server.URL), "application/json", bytes.NewBuffer(requestBody))
-	assert.Equal(s.T(), 200, resp.StatusCode)
+	var user models.User
+	var server models.Server
+	s.DB.Find(&user).Where("username = ?", "invited")
+	s.DB.Find(&server, 1)
 
 	client := &http.Client{}
 
 	// Prepare the http request for server invite
-	requestBody, err = json.Marshal(map[string]uint{
+	requestBody, err := json.Marshal(map[string]uint{
 		"server_id": server.ID,
-		"user_id":   invitedUser.ID,
+		"user_id":   user.ID,
 	})
 	s.NoError(err)
 
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/servers/invite", s.server.URL), bytes.NewBuffer(requestBody))
 	s.NoError(err)
-
 	req.Header.Add("Content-Type", "application/json")
-
-	// Set login cookie to current request
-	for _, cookie := range resp.Cookies() {
-		assert.Equal(s.T(), "discord_clone_session", cookie.Name)
-		req.AddCookie(&http.Cookie{Name: cookie.Name, Value: cookie.Value})
-	}
+	req.AddCookie(GetLoginCookie(s, user))
 
 	// Send off request
-	resp, err = client.Do(req)
+	resp, err := client.Do(req)
 	s.NoError(err)
 
 	assert.Equal(s.T(), 200, resp.StatusCode)
+
 	type httpResp struct {
 		Message struct {
 			Invite string
 		}
 	}
+	var rsi services.RedisServerInvite
 
 	var r httpResp
 	// Assert that response is what we expect
 	s.NoError(json.NewDecoder(resp.Body).Decode(&r))
 	assert.NotEqual(s.T(), "", r.Message.Invite)
+	err = services.GetRedisKey(r.Message.Invite, s.Services.Redis, &rsi)
+	s.NoError(err)
+	assert.Equal(s.T(), services.SERVER_INVITE, rsi.Key)
+	assert.Equal(s.T(), user.ID, rsi.UserID)
+	assert.Equal(s.T(), server.ID, rsi.ServerID)
 }
 
-func CreateTestServer(s *e2eTestSuite, name string, private bool, userID uint) models.Server {
-	adminRole, err := s.Services.RoleRepo.CreateAdminRole()
-	if err != nil {
-		s.NoError(err)
-	}
-
-	baseRole, err := s.Services.RoleRepo.CreateBaseRole()
-	if err != nil {
-		s.NoError(err)
-	}
-	server := models.Server{
-		Name:    name,
-		Private: private,
-		User_ID: userID,
-		Roles: []models.Role{
-			adminRole,
-			baseRole,
-		},
-	}
-	s.DB.Create(&server)
-	return server
-
-}

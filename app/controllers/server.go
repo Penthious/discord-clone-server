@@ -1,16 +1,12 @@
 package controllers
 
 import (
-	"context"
 	"discord-clone-server/app/services"
 	"discord-clone-server/models"
 	"discord-clone-server/repositories"
 	"discord-clone-server/utils"
 	"errors"
 	"fmt"
-	"strconv"
-	"strings"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -140,12 +136,16 @@ func InviteUser(rs repositories.ServerRepo, rp repositories.PermissionRepo, r *r
 		}
 
 		serverInviteKey := utils.GetRandomString("", 12)
-		serverInviteValue := fmt.Sprintf("serverID=%v|invitedUserID=%v|key=%v", server.ID, p.UserID, services.SERVER_INVITE)
-		if err := r.Set(context.Background(), serverInviteKey, serverInviteValue, 24*time.Hour).Err(); err != nil {
+		ro := services.RedisServerInvite{Key: services.SERVER_INVITE, ServerID: server.ID, UserID: p.UserID}
+		// serverInviteValue := fmt.Sprintf("serverID=%v|invitedUserID=%v|key=%v", server.ID, p.UserID, services.SERVER_INVITE)
+		if err := services.SetRedisKey(serverInviteKey, r, ro); err != nil {
 			services.RespondBadRequestError(c, err, err.Error())
 			return
 		}
-		// 	"invite_key": "_NfHK5a84jjJk"
+		// if err := r.Set(context.Background(), serverInviteKey, ro, 24*time.Hour).Err(); err != nil {
+		// 	services.RespondBadRequestError(c, err, err.Error())
+		// 	return
+		// }
 
 		type inviteResponse struct {
 			Invite string `json:"invite"`
@@ -176,56 +176,62 @@ func JoinServer(rs repositories.ServerRepo, rr repositories.RoleRepo, r *redis.C
 		var server models.Server
 
 		if p.InviteKey != "" {
-			key, err := services.GetRedisKey(p.InviteKey, r)
-			if err != nil {
-				services.RespondBadRequestError(c, err, err.Error())
+			// key, err := services.GetRedisKey(p.InviteKey, r)
+			// if err != nil {
+			// 	services.RespondBadRequestError(c, err, err.Error())
+			// 	return
+			// }
+			// data := strings.Split(key, "|")
+			// if len(data) != 3 {
+			// 	services.RespondBadRequestError(c, errors.New("Server|User|Key was not provided"), "Mismatch data")
+			// 	return
+			// }
+
+			var rsi services.RedisServerInvite
+
+			if err := services.GetRedisKey(p.InviteKey, r, &rsi); err != nil {
+				services.RespondBadRequestError(c, errors.New("Issue getting struct from redis"), "Mismatch data")
 				return
 			}
-			data := strings.Split(key, "|")
-			if len(data) != 3 {
-				services.RespondBadRequestError(c, errors.New("Server|User|Key was not provided"), "Mismatch data")
-				return
-			}
+			// type redisOutput struct {
+			// 	Key      string
+			// 	ServerID uint
+			// 	UserID   uint
+			// }
+			// ro := redisOutput{}
+			// for _, s := range data {
+			// 	if strings.Contains(s, "serverID") {
+			// 		t := strings.Split(s, "=")[1]
+			// 		v, err := strconv.ParseUint(t, 10, 32)
+			// 		if err != nil {
+			// 			services.RespondBadRequestError(c, err, err.Error())
+			// 			return
+			// 		}
+			// 		ro.ServerID = uint(v)
 
-			type redisOutput struct {
-				Key      string
-				ServerID uint
-				UserID   uint
-			}
-			ro := redisOutput{}
-			for _, s := range data {
-				if strings.Contains(s, "serverID") {
-					t := strings.Split(s, "=")[1]
-					v, err := strconv.ParseUint(t, 10, 32)
-					if err != nil {
-						services.RespondBadRequestError(c, err, err.Error())
-						return
-					}
-					ro.ServerID = uint(v)
+			// 	} else if strings.Contains(s, "userID") {
+			// 		t := strings.Split(s, "=")[1]
+			// 		v, err := strconv.ParseUint(t, 10, 32)
+			// 		if err != nil {
+			// 			services.RespondBadRequestError(c, err, err.Error())
+			// 			return
+			// 		}
+			// 		ro.UserID = uint(v)
 
-				} else if strings.Contains(s, "userID") {
-					t := strings.Split(s, "=")[1]
-					v, err := strconv.ParseUint(t, 10, 32)
-					if err != nil {
-						services.RespondBadRequestError(c, err, err.Error())
-						return
-					}
-					ro.UserID = uint(v)
-
-				} else if strings.Contains(s, "key") {
-					ro.Key = strings.Split(s, "=")[1]
-				}
-			}
-			if ro.Key != services.SERVER_INVITE {
+			// 	} else if strings.Contains(s, "key") {
+			// 		ro.Key = strings.Split(s, "=")[1]
+			// 	}
+			// }
+			if rsi.Key != services.SERVER_INVITE {
 				services.RespondBadRequestError(c, errors.New("Key was not provided"), "Mismatch data")
 				return
 			}
-			if ro.UserID != user.ID {
+			if rsi.UserID != user.ID {
 				services.RespondBadRequestError(c, errors.New("User tried to join server that he was not invited to"), "Mismatch data")
 				return
 			}
 
-			if err := rs.Find(ro.ServerID, &server); err != nil {
+			if err := rs.Find(rsi.ServerID, &server); err != nil {
 				services.RespondBadRequestError(c, err, err.Error())
 				return
 			}
