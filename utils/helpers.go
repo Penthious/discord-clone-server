@@ -5,6 +5,7 @@ import (
 	"math/rand"
 )
 
+// GetRandomString : Returns a unique random string
 func GetRandomString(prefix string, length int) string {
 	charset := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	runes := make([]rune, length)

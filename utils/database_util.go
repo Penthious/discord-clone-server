@@ -80,6 +80,12 @@ func DropTestDB(t *testing.T, db *gorm.DB, dbName string) {
 	if err := db.Exec(fmt.Sprintf("DROP DATABASE if exists `%s`", dbName)).Error; err != nil {
 		t.Fatalf("error refreshing test DB: %s", err.Error())
 	}
+
+	gormDB, err := db.DB()
+	if err != nil {
+		t.Fatalf("Error closing DB: %s", err.Error())
+	}
+	gormDB.Close()
 }
 
 func MakeTestUsers(t *testing.T, db *gorm.DB, users []models.User) {

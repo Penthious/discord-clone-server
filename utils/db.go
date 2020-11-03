@@ -8,6 +8,7 @@ import (
 	mySQL "github.com/go-sql-driver/mysql"
 )
 
+// GetMysqlDSN : Returns a mysql connection string
 func GetMysqlDSN(prefix string) string {
 	config := &mySQL.Config{
 		User:                 os.Getenv(fmt.Sprintf("%s%s", prefix, "DB_USER")),

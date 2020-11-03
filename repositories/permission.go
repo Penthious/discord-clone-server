@@ -3,7 +3,6 @@ package repositories
 import (
 	"discord-clone-server/models"
 	"errors"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -79,8 +78,6 @@ group by p.id
 
 	var userPermissions []models.Permission
 	r.DB.Raw(query, userID, serverID).Scan(&userPermissions)
-
-	fmt.Printf("userRoles: %v\n", userPermissions)
 
 	return userPermissions, nil
 }

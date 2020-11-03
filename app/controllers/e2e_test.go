@@ -30,7 +30,6 @@ type e2eTestSuite struct {
 }
 
 func TestE2ETestSuite(t *testing.T) {
-	fmt.Print("\n\n\n\nTestE2ETestSuite\n")
 	suite.Run(t, &e2eTestSuite{})
 }
 func (s *e2eTestSuite) SetupSuite() {
@@ -54,9 +53,6 @@ func (s *e2eTestSuite) SetupSuite() {
 
 func (s *e2eTestSuite) TearDownSuite() {
 	utils.DropTestDB(s.T(), s.DB, s.dbName)
-	db, err := s.DB.DB()
-	s.NoError(err)
-	db.Close()
 
 	s.server.Close()
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"discord-clone-server/repositories"
 	"discord-clone-server/utils"
-	"fmt"
 	"log"
 	"os"
 
@@ -51,8 +50,7 @@ func InitDB() (*gorm.DB, error) {
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
-			LogLevel: logger.Info,
-			// LogLevel: logger.Error,
+			LogLevel: logger.Error,
 			Colorful: true,
 		},
 	)
@@ -66,7 +64,6 @@ func InitDB() (*gorm.DB, error) {
 }
 
 func InitRedis() (*redis.Client, error) {
-	fmt.Printf("REDDIS ADDR: %v \n", os.Getenv("REDIS_ADDR"))
 	cl := redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_ADDR"),
 		Password: os.Getenv("REDIS_PASSWORD"),

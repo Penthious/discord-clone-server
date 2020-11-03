@@ -16,7 +16,8 @@ func NewServerRepo(db *gorm.DB) ServerRepo {
 type ServerRepo interface {
 	Create(*models.Server) error
 	Append(models.User, *models.Server) error
-	Find(uint, *models.Server) error
+	Find(serverID uint, server *models.Server) error
+	FindWithRoles(serverID uint, server *models.Server) error
 	UserExistsOnServer(*models.Server, models.User) error
 }
 
@@ -34,6 +35,10 @@ func (r serverRepo) Create(server *models.Server) error {
 
 func (r serverRepo) Find(serverID uint, server *models.Server) error {
 	return r.DB.Where("id = ?", serverID).Find(&server).Error
+}
+
+func (r serverRepo) FindWithRoles(serverID uint, server *models.Server) error {
+	return r.DB.Preload("Roles").Find(&server, serverID).Error
 }
 
 func (r serverRepo) UserExistsOnServer(server *models.Server, user models.User) error {

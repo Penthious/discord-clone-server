@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -37,7 +35,6 @@ func (u *User) CheckPassword(password string) error {
 }
 
 func HashPassword(password string) (string, error) {
-	fmt.Println(password)
 
 	if password != "" {
 		hash, err := makePassword(password)

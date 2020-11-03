@@ -12,17 +12,17 @@ import (
 )
 
 func (s *e2eTestSuite) Test_EndToEnd_UserCreate() {
-	s.T().Run("User Create", func(t *testing.T) { UserCreate(s) })
-	s.T().Run("User Create - no first name - error", func(t *testing.T) { UserCreate__NoFirstNameError(s) })
-	s.T().Run("User Create - no last name - error", func(t *testing.T) { UserCreate__NoLastNameError(s) })
-	s.T().Run("User Create - no user name - error", func(t *testing.T) { UserCreate__NoUsernameError(s) })
-	s.T().Run("User Create - username must be longer than 3 - error", func(t *testing.T) { UserCreate__UsernameMustBeLongerThan3Error(s) })
-	s.T().Run("User Create - username must be shorter than 15 - error", func(t *testing.T) { UserCreate__UsernameMustBeShorterThan15Error(s) })
-	s.T().Run("User Create - no email - error", func(t *testing.T) { UserCreate__NoEmailError(s) })
-	s.T().Run("User Create - email must be valid - error", func(t *testing.T) { UserCreate__EmailMustBeValidError(s) })
-	s.T().Run("User Create - no password - error", func(t *testing.T) { UserCreate__NoPasswordError(s) })
-	s.T().Run("User Create - password must be longer than 8 - error", func(t *testing.T) { UserCreate__PasswordMustBeLongerThan8Error(s) })
-	s.T().Run("User Create - password must be shorter than 36 - error", func(t *testing.T) { UserCreate__PasswordMustBeShorterThan36Error(s) })
+	s.T().Run("User Create - creates a user - success", func(t *testing.T) { userCreate(s) })
+	s.T().Run("User Create - no first name - error", func(t *testing.T) { userCreate__NoFirstNameError(s) })
+	s.T().Run("User Create - no last name - error", func(t *testing.T) { userCreate__NoLastNameError(s) })
+	s.T().Run("User Create - no user name - error", func(t *testing.T) { userCreate__NoUsernameError(s) })
+	s.T().Run("User Create - username must be longer than 3 - error", func(t *testing.T) { userCreate__UsernameMustBeLongerThan3Error(s) })
+	s.T().Run("User Create - username must be shorter than 15 - error", func(t *testing.T) { userCreate__UsernameMustBeShorterThan15Error(s) })
+	s.T().Run("User Create - no email - error", func(t *testing.T) { userCreate__NoEmailError(s) })
+	s.T().Run("User Create - email must be valid - error", func(t *testing.T) { userCreate__EmailMustBeValidError(s) })
+	s.T().Run("User Create - no password - error", func(t *testing.T) { userCreate__NoPasswordError(s) })
+	s.T().Run("User Create - password must be longer than 8 - error", func(t *testing.T) { userCreate__PasswordMustBeLongerThan8Error(s) })
+	s.T().Run("User Create - password must be shorter than 36 - error", func(t *testing.T) { userCreate__PasswordMustBeShorterThan36Error(s) })
 
 }
 
@@ -39,7 +39,7 @@ func (s *e2eTestSuite) Test_EndToEnd_UserLogin() {
 	s.T().Run("Login user -- with username", func(t *testing.T) { Login__WithUsername(s) })
 }
 
-func UserCreate(s *e2eTestSuite) {
+func userCreate(s *e2eTestSuite) {
 	requestBody, err := json.Marshal(map[string]string{
 		"first_name": "Bob",
 		"last_name":  "Bobbers",
@@ -70,7 +70,7 @@ func UserCreate(s *e2eTestSuite) {
 
 }
 
-func UserCreate__NoFirstNameError(s *e2eTestSuite) {
+func userCreate__NoFirstNameError(s *e2eTestSuite) {
 	requestBody, err := json.Marshal(map[string]string{
 		"last_name": "Bobbers",
 		"username":  "Bobbers123",
@@ -89,7 +89,7 @@ func UserCreate__NoFirstNameError(s *e2eTestSuite) {
 	s.NoError(json.NewDecoder(resp.Body).Decode(&r))
 	assert.Equal(s.T(), "Key: 'userCreateParams.FirstName' Error:Field validation for 'FirstName' failed on the 'required' tag", r.Error)
 }
-func UserCreate__NoLastNameError(s *e2eTestSuite) {
+func userCreate__NoLastNameError(s *e2eTestSuite) {
 	requestBody, err := json.Marshal(map[string]string{
 		"first_name": "bob",
 		"username":   "Bobbers123",
@@ -109,7 +109,7 @@ func UserCreate__NoLastNameError(s *e2eTestSuite) {
 	assert.Equal(s.T(), "Key: 'userCreateParams.LastName' Error:Field validation for 'LastName' failed on the 'required' tag", r.Error)
 }
 
-func UserCreate__NoUsernameError(s *e2eTestSuite) {
+func userCreate__NoUsernameError(s *e2eTestSuite) {
 	requestBody, err := json.Marshal(map[string]string{
 		"first_name": "bob",
 		"last_name":  "Bobbers",
@@ -129,7 +129,7 @@ func UserCreate__NoUsernameError(s *e2eTestSuite) {
 	assert.Equal(s.T(), "Key: 'userCreateParams.Username' Error:Field validation for 'Username' failed on the 'required' tag", r.Error)
 }
 
-func UserCreate__UsernameMustBeLongerThan3Error(s *e2eTestSuite) {
+func userCreate__UsernameMustBeLongerThan3Error(s *e2eTestSuite) {
 	requestBody, err := json.Marshal(map[string]string{
 		"first_name": "bob",
 		"last_name":  "Bobbers",
@@ -150,7 +150,7 @@ func UserCreate__UsernameMustBeLongerThan3Error(s *e2eTestSuite) {
 	assert.Equal(s.T(), "Key: 'userCreateParams.Username' Error:Field validation for 'Username' failed on the 'min' tag", r.Error)
 }
 
-func UserCreate__UsernameMustBeShorterThan15Error(s *e2eTestSuite) {
+func userCreate__UsernameMustBeShorterThan15Error(s *e2eTestSuite) {
 	requestBody, err := json.Marshal(map[string]string{
 		"first_name": "bob",
 		"last_name":  "Bobbers",
@@ -171,7 +171,7 @@ func UserCreate__UsernameMustBeShorterThan15Error(s *e2eTestSuite) {
 	assert.Equal(s.T(), "Key: 'userCreateParams.Username' Error:Field validation for 'Username' failed on the 'max' tag", r.Error)
 }
 
-func UserCreate__NoEmailError(s *e2eTestSuite) {
+func userCreate__NoEmailError(s *e2eTestSuite) {
 	requestBody, err := json.Marshal(map[string]string{
 		"first_name": "Bob",
 		"last_name":  "Bobbers",
@@ -191,7 +191,7 @@ func UserCreate__NoEmailError(s *e2eTestSuite) {
 	assert.Equal(s.T(), "Key: 'userCreateParams.Email' Error:Field validation for 'Email' failed on the 'required' tag", r.Error)
 }
 
-func UserCreate__EmailMustBeValidError(s *e2eTestSuite) {
+func userCreate__EmailMustBeValidError(s *e2eTestSuite) {
 	requestBody, err := json.Marshal(map[string]string{
 		"first_name": "Bob",
 		"last_name":  "Bobbers",
@@ -212,7 +212,7 @@ func UserCreate__EmailMustBeValidError(s *e2eTestSuite) {
 	assert.Equal(s.T(), "Key: 'userCreateParams.Email' Error:Field validation for 'Email' failed on the 'email' tag", r.Error)
 }
 
-func UserCreate__NoPasswordError(s *e2eTestSuite) {
+func userCreate__NoPasswordError(s *e2eTestSuite) {
 	requestBody, err := json.Marshal(map[string]string{
 		"first_name": "bob",
 		"last_name":  "Bobbers",
@@ -232,7 +232,7 @@ func UserCreate__NoPasswordError(s *e2eTestSuite) {
 	assert.Equal(s.T(), "Key: 'userCreateParams.Password' Error:Field validation for 'Password' failed on the 'required' tag", r.Error)
 }
 
-func UserCreate__PasswordMustBeLongerThan8Error(s *e2eTestSuite) {
+func userCreate__PasswordMustBeLongerThan8Error(s *e2eTestSuite) {
 	requestBody, err := json.Marshal(map[string]string{
 		"first_name": "bob",
 		"last_name":  "Bobbers",
@@ -253,7 +253,7 @@ func UserCreate__PasswordMustBeLongerThan8Error(s *e2eTestSuite) {
 	assert.Equal(s.T(), "Key: 'userCreateParams.Password' Error:Field validation for 'Password' failed on the 'min' tag", r.Error)
 }
 
-func UserCreate__PasswordMustBeShorterThan36Error(s *e2eTestSuite) {
+func userCreate__PasswordMustBeShorterThan36Error(s *e2eTestSuite) {
 	requestBody, err := json.Marshal(map[string]string{
 		"first_name": "bob",
 		"last_name":  "Bobbers",

@@ -7,6 +7,7 @@ import (
 )
 
 func Test_UserRepo_Get(t *testing.T) {
+	t.Parallel()
 	dbName := utils.GetRandomString(t.Name(), 6)
 	db := utils.InitTestDB(t, dbName)
 	defer utils.DropTestDB(t, db, dbName)
@@ -30,6 +31,7 @@ func Test_UserRepo_Get(t *testing.T) {
 }
 
 func Test_UserRepo_Create(t *testing.T) {
+	t.Parallel()
 	dbName := utils.GetRandomString(t.Name(), 6)
 	db := utils.InitTestDB(t, dbName)
 	defer utils.DropTestDB(t, db, dbName)
@@ -52,89 +54,60 @@ func Test_UserRepo_Create(t *testing.T) {
 
 }
 
-/*
-... repos/sets_test.go
-func TestGlobalSets(t *testing.T) {
-	dbName := utils.TestDBName("negatives")
-	gormDB := utils.InitTestDB(t, dbName)
+func Test_UserRepo_Find_byID(t *testing.T) {
+	t.Parallel()
+	dbName := utils.GetRandomString(t.Name(), 6)
+	db := utils.InitTestDB(t, dbName)
+	defer utils.DropTestDB(t, db, dbName)
+	user := models.User{FirstName: "Bob1", LastName: "bobbers", Username: "bobbers1", Password: "test", Email: "bob1@bob.com"}
+	db.Create(&user)
+	userRepo := NewUserRepo(db)
 
-	.... some test code
+	dbUser, err := userRepo.Find(UserFindParams{ID: user.ID})
+	if err != nil {
+		t.Fatalf("Error executing Find: %v", err.Error())
+	}
+
+	if user.ID != dbUser.ID {
+		t.Fatalf("Failed to find user")
+	}
 }
 
-... utils/test_utils_test.go
+func Test_UserRepo_Find_byUsername(t *testing.T) {
+	t.Parallel()
+	dbName := utils.GetRandomString(t.Name(), 6)
+	db := utils.InitTestDB(t, dbName)
+	defer utils.DropTestDB(t, db, dbName)
+	user := models.User{FirstName: "Bob1", LastName: "bobbers", Username: "bobbers1", Password: "test", Email: "bob1@bob.com"}
+	db.Create(&user)
+	userRepo := NewUserRepo(db)
 
-import	mySQL "github.com/go-sql-driver/mysql"
-
-
-func GetMysqlDSN(prefix string) string {
-	config :=  &mySQL.Config{
-		User:                 os.Getenv(fmt.Sprintf("%s%s", prefix, "DB_USER")),
-		Passwd:               os.Getenv(fmt.Sprintf("%s%s", prefix, "DB_PASSWORD")),
-		Addr:                 os.Getenv(fmt.Sprintf("%s%s", prefix, "DB_ADDR")),
-		DBName:               os.Getenv(fmt.Sprintf("%s%s", prefix, "DB_NAME")),
-		Net:                  "tcp",
-		Timeout:              5 * time.Second,
-		ReadTimeout:          5 * time.Second,
-		WriteTimeout:         5 * time.Second,
-		MultiStatements:      true,
-		AllowNativePasswords: true,
-		ParseTime:            true,
+	dbUser, err := userRepo.Find(UserFindParams{Username: user.Username})
+	if err != nil {
+		t.Fatalf("Error executing Find: %v", err.Error())
 	}
-	return config.FormatDSN()
+
+	if user.ID != dbUser.ID {
+		t.Fatalf("Failed to find user")
+	}
+
 }
 
-func TestDBName(prefix string) string {
-	length := 6
-	charset := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	runes := make([]rune, length)
-	for i := 0; i < length; i++ {
-		runes[i] = rune(charset[rand.Intn(len(charset))])
+func Test_UserRepo_Find_byEmail(t *testing.T) {
+	t.Parallel()
+	dbName := utils.GetRandomString(t.Name(), 6)
+	db := utils.InitTestDB(t, dbName)
+	defer utils.DropTestDB(t, db, dbName)
+	user := models.User{FirstName: "Bob1", LastName: "bobbers", Username: "bobbers1", Password: "test", Email: "bob1@bob.com"}
+	db.Create(&user)
+	userRepo := NewUserRepo(db)
+
+	dbUser, err := userRepo.Find(UserFindParams{Email: user.Email})
+	if err != nil {
+		t.Fatalf("Error executing Find: %v", err.Error())
 	}
 
-	return fmt.Sprintf("%s_%s", prefix, string(runes))
+	if user.ID != dbUser.ID {
+		t.Fatalf("Failed to find user")
+	}
 }
-
-func TestGlobalSets(t *testing.T) {
-	dbName := utils.TestDBName("negatives")
-	gormDB := utils.InitTestDB(t, dbName)
-	defer utils.DropTestDB(t, gormDB, dbName)
-
-	setsRepo := NewSetRepo(gormDB, "sets", SetsConfig{})
-
-	sets := []models.Set{
-		{Name: "Test Set 1", Description: "sample description", Channel: "SEO", IsGlobal: true, UserID: 1},
-		{Name: "Test Set 2", Description: "sample description", Channel: "SEO", IsGlobal: true, UserID: 1},
-		{Name: "Not Global Test Set", Description: "sample description", Channel: "SEO", IsGlobal: false, UserID: 1},
-	}
-	MakeTestSets(t, gormDB, sets)
-
-	keywords := []models.Keyword{
-		{Keyword: "copied keyword1", SetID: sets[0].ID},
-		{Keyword: "copied keyword2", SetID: sets[0].ID},
-		{Keyword: "copied keyword3", SetID: sets[0].ID},
-	}
-	MakeTestKeywords(t, gormDB, keywords)
-
-	negatives := []models.Negative{
-		{String: "sample negative", SetID: sets[0].ID},
-		{String: "sample negative 2", SetID: sets[0].ID},
-	}
-	MakeTestNegatives(t, gormDB, negatives)
-
-	buckets := []models.Bucket{
-		{Name: "Sample Bucket", SetID: sets[0].ID},
-	}
-	MakeTestBuckets(t, gormDB, buckets)
-
-	bucketValues := []models.BucketValue{
-		{SearchFor: "sample search for", GroupAs: "sample group as", BucketID: buckets[0].ID},
-	}
-	MakeTestBucketValues(t, gormDB, bucketValues)
-
-	t.Run("GetGlobalSets", func(t *testing.T) {
-		globalSets, err := setsRepo.GlobalSets()
-		require.NoError(t, err)
-		assert.Equal(t, len(globalSets), 2, "global sets length retrieved should be 2")
-	})
-
-*/
